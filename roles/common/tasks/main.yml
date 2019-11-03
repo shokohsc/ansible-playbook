@@ -1,0 +1,8 @@
+---
+# tasks file for shokohscrole
+- name: Nuc i3 tasks
+  import_tasks: nuc-NUC7i3BNK.yml
+  when: ansible_facts['nodename']|lower == 'nuc-nuc7i3bnk'
+- name: Raspberry pi tasks
+  import_tasks: raspberrypi.yml
+  when: ansible_facts['nodename']|lower == 'raspberrypi'

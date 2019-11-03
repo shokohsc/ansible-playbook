@@ -1,0 +1,9 @@
+---
+- name: Pull latest container images
+  args:
+    chdir: /home/nuc/Documents/seedbox
+  command: /usr/local/bin/docker-compose pull
+- name: Recreate containers
+  args:
+    chdir: /home/nuc/Documents/seedbox
+  command: /usr/local/bin/docker-compose up -d
