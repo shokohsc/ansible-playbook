@@ -1,12 +1,12 @@
 ---
 - hosts: all
   become: yes
-  roles:
-    - { role: common, dir: '/app' }
-  tasks:
+  pre_tasks:
     - name: Update packages
       apt:
         autoclean: yes
         autoremove: yes
         update_cache: yes
         upgrade: yes
+  roles:
+    - { role: common, dir: '/app' }
