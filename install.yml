@@ -15,7 +15,7 @@
 # Selfhosted hosts roles
   roles:
     - role: install
-      dir: './'
+      dir: '/app'
 
 # # https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change
 # # Selfhosted hosts handlers

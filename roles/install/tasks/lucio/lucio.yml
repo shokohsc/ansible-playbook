@@ -1,5 +1,3 @@
-# lucio tasks file for shokohscrole
----
 # https://docs.ansible.com/ansible/latest/modules/snap_module.html
 # Install a snap with classic confinement
 - name: Install canonical livepatch snap
@@ -10,10 +8,8 @@
 
 # https://docs.ansible.com/ansible/latest/modules/command_module.html#command-module
 - name: Check livepatch status
-  command: "canonical-livepatch status --verbose"
-  changed_when: false
+  command: /snap/bin/canonical-livepatch status --verbose
   register: livepatch
-  ignore_errors: true
 
 # https://docs.ansible.com/ansible/latest/modules/command_module.html
 # https://auth.livepatch.canonical.com/?user_type=ubuntu-user

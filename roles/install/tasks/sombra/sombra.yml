@@ -24,17 +24,10 @@
       - { path: '/mnt/WD2To', src: '/dev/sdb1', fstype: 'exfat' }
   become: yes
 
-# https://docs.ansible.com/ansible/latest/modules/include_role_module.html
-# https://github.com/ryankwilliams/ansible-ssh-copy-id
-- name: Copy sombra public to key over to lucio
-  include_role:
-    name: ryankwilliams.ssh_copy_id
-  vars:
-    hostname: lucio
-    username: lucio
-    password: '{{ lookup('env', 'LUCIO_SSH_PASSWORD' )}}'
-    ssh_public_key: '/home/{{ ansible_user }}/.ssh/id_rsa.pub'
-    ssh_port: 22
+# https://docs.ansible.com/ansible/latest/modules/openssh_keypair_module.html
+- name: Generate ssh key
+  openssh_keypair:
+    path: '/home/{{ ansible_user }}/.ssh/id_rsa'
 
 # https://docs.ansible.com/ansible/latest/modules/stat_module.html
 # Determine if lab folder path exists

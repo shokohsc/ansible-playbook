@@ -7,14 +7,22 @@
   apt:
     pkg:
     - tar
+    - unzip
     - wget
   become: yes
 
+# https://docs.ansible.com/ansible/latest/modules/copy_module.html
+- name: Copy cloudflared-stable-linux-arm archive
+  copy:
+    src: ../../files/cloudflared-stable-linux-arm.tgz
+    dest: /home/{{ ansible_user }}/cloudflared-stable-linux-arm.tgz
+    mode: '0755'
+
 # https://docs.ansible.com/ansible/latest/modules/unarchive_module.html
 # tar --help
-- name: Download & unarchive cloudflared-stable-linux-arm archive
+- name: Unarchive cloudflared-stable-linux-arm archive
   unarchive:
-    src: https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-arm.tgz
+    src: /home/{{ ansible_user }}/cloudflared-stable-linux-arm.tgz
     dest: /home/{{ ansible_user }}
 
 # https://docs.ansible.com/ansible/latest/modules/copy_module.html
