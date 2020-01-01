@@ -13,7 +13,7 @@
     -e CANONICAL_KEY=canonical_livepatch_key \
     -e PARSEC_PEER_ID=parsec_peer_id \
     -e LUCIO_SSH_PASSWORD=some_password \
-    shokohsc/ansible -i inventory -K installation.yml
+    shokohsc/ansible -i inventory -K install.yml
 
     $> docker run \
     --rm \

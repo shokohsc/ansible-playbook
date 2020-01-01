@@ -14,7 +14,7 @@
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html
 # Selfhosted hosts roles
   roles:
-    - role: installation
+    - role: install
       dir: './'
 
 # # https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change
