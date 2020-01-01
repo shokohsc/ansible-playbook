@@ -1,0 +1,67 @@
+# main tasks file for shokohscrole
+---
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+- name: Install basic packages
+  apt:
+    pkg:
+    - git
+    - net-tools
+    - vim
+    - htop
+    - usbutils
+    - build-essential
+    - sudo
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+# ls --help (hidden files, list view, append indicator entries, Human readable sizes)
+- name: Add 'll' alias & edit PATH environment variable
+  lineinfile:
+    path: '{{ item.path }}'
+    line: '{{ item.line }}'
+  with_items:
+    - { path: '/home/{{ ansible_user }}/.bashrc', line: "alias ll='ls -AlFh'" }
+    - { path: '/home/{{ ansible_user }}/.bashrc', line: 'export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' }
+
+# https://docs.ansible.com/ansible/latest/modules/git_config_module.html
+# Set some settings in ~/.gitconfig
+- name: Set basic global git config
+  git_config:
+    name: '{{ item.name }}'
+    scope: global
+    value: '{{ item.value }}'
+  with_items:
+    - { name: 'user.email', value: 'shokohsc@gmail.com' }
+    - { name: 'user.name', value: 'shokohsc' }
+
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+# https://blaszkowski.com/2018/09/02/ansible-add-user-to-sudo
+- name: Add user to sudoers
+  lineinfile:
+    path: '/etc/sudoers.d/{{ ansible_user }}'
+    line: '{{ ansible_user }} ALL=(ALL) NOPASSWD: ALL'
+    mode: 0440
+    create: yes
+    validate: '/usr/sbin/visudo -cf %s'
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+- name: Nucs i3 tasks
+  import_tasks: nucs.yml
+  when: ansible_facts['nodename']|lower != 'raspberrypi'
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+- name: Raspberry pi tasks
+  import_tasks: raspberrypi/raspberrypi.yml
+  when: ansible_facts['nodename']|lower == 'raspberrypi'
+
+# https://docs.ansible.com/ansible/latest/modules/cron_module.html
+- name: Set cron job to update packages monthly
+  cron:
+    name: apt packages monthly updater
+    minute: 0
+    hour: 0
+    day: 1
+    job: 'apt update && apt upgrade'
+  become: yes

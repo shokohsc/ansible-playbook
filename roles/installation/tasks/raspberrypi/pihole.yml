@@ -1,0 +1,65 @@
+# pihole tasks file for shokohscrole
+# https://pi-hole.net/
+# https://docs.pi-hole.net/
+# https://github.com/pi-hole/pi-hole
+# https://gist.github.com/bendews/e09edfc60e581ec4c686c4b70297f543
+---
+# https://docs.ansible.com/ansible/latest/modules/file_module.html
+- name: Create pihole directory
+  file:
+    path: /etc/pihole
+    state: directory
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/copy_module.html
+- name: Copy pihole conf
+  copy:
+    src: ../../files/pihole-setupVars.conf
+    dest: /etc/pihole/setupVars.conf
+  register: pihole_config
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/stat_module.html
+- name: Stat pihole binary
+  stat:
+    path: /usr/local/bin/pihole
+    register: pihole_binary
+
+# https://docs.ansible.com/ansible/latest/modules/set_fact_module.html
+- name: Define pihole_installed variable
+  set_fact:
+    pihole_installed: "{{ pihole_binary.stat.exists | default(false) }}"
+
+# https://docs.ansible.com/ansible/latest/modules/get_url_module.html
+- name: Download pihole install script
+  get_url:
+    url: https://raw.githubusercontent.com/pi-hole/pi-hole/master/automated%20install/basic-install.sh
+    dest: ~/pihole-install.sh
+    mode: u+rwx
+  when: not pihole_installed
+
+# https://docs.ansible.com/ansible/latest/modules/shell_module.html
+- name: Run pihole install script
+  shell: ~/pihole-install.sh --unattended
+  when: not pihole_installed
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/cron_module.html
+- name: Set cron job to update pihole monthly
+  cron:
+    name: pihole monthly updater
+    user: pi
+    minute: 0
+    hour: 0
+    day: 1
+    job: '/usr/local/bin/pihole -up'
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+- name: Define Cloudfared DNS upstream server
+  lineinfile:
+    path: /etc/dnsmasq.d/01-pihole.conf
+    line: server=127.0.0.1#5053
+  register: dnsmasq_config
+  notify: Pihole restart dns
+  become: yes

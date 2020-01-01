@@ -1,0 +1,25 @@
+# pi tasks file for shokohscrole
+---
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+- name: Add hosts entries
+  lineinfile:
+    path: '/etc/hosts'
+    line: '{{ item.line }}'
+    regexp: '{{ item.regex }}'
+  with_items:
+    - { line: '10.164.18.1     routeur', regex: 'routeur$' }
+    - { line: '10.164.18.43    chromecast', regex: 'chromecast$' }
+    - { line: '10.164.18.53    pi', regex: 'pi$' }
+    - { line: '10.164.18.63    sombra', regex: 'sombra$' }
+    - { line: '10.164.18.63    shokohsc.duckdns.org', regex: 'shokohsc.duckdns.org$' }
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# cloudflared tasks file for shokohscrole
+- name: Cloudflared tasks
+  import_tasks: cloudflared.yml
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# pihole tasks file for shokohscrole
+- name: Pihole tasks
+  import_tasks: pihole.yml

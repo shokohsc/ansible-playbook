@@ -1,3 +1,0 @@
----
-- name: Update pihole
-  command: /usr/local/bin/pihole -up

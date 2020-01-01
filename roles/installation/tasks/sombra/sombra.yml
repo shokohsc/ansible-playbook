@@ -1,0 +1,52 @@
+# sombra tasks file for shokohscrole
+---
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+# https://wiki.debian.org/NTFS
+- name: Install zip, NTFS and exFAT packages
+  apt:
+    pkg:
+    - ntfs-3g
+    - exfat-utils
+    - zip
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/mount_module.html
+# lsblk -f to show disks connected and filesystems used
+- name: Mount External disks
+  mount:
+    path: '{{ item.path }}'
+    src: '{{ item.src }}'
+    fstype: '{{ item.fstype }}'
+    state: present
+  with_items:
+      - { path: '/mnt/WD1To', src: '/dev/sda2', fstype: 'ntfs' }
+      - { path: '/mnt/WD2To', src: '/dev/sdb1', fstype: 'exfat' }
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/include_role_module.html
+# https://github.com/ryankwilliams/ansible-ssh-copy-id
+- name: Copy sombra public to key over to lucio
+  include_role:
+    name: ryankwilliams.ssh_copy_id
+  vars:
+    hostname: lucio
+    username: lucio
+    password: '{{ lookup('env', 'LUCIO_SSH_PASSWORD' )}}'
+    ssh_public_key: '/home/{{ ansible_user }}/.ssh/id_rsa.pub'
+    ssh_port: 22
+
+# https://docs.ansible.com/ansible/latest/modules/stat_module.html
+# Determine if lab folder path exists
+- name: Stat lab folder
+  stat:
+    path: '/home/{{ ansible_user }}/seedbox'
+  register: lab_repo_folder
+
+# https://docs.ansible.com/ansible/latest/modules/git_module.html
+# Clone selfhosted docker-compose repo
+- name: Clone lab repo
+  git:
+    repo: https://github.com/shokohsc/essbey.git
+    dest: '/home/{{ ansible_user }}/seedbox'
+  when: lab_repo_folder is defined and not lab_repo_folder.stat.exists

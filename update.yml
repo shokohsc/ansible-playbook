@@ -1,0 +1,20 @@
+---
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_checkmode.html
+- hosts: all
+  pre_tasks:
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# Update, clean and purge packages on all hosts
+# apt --help
+    - name: Update  and clean packages
+      apt:
+        autoclean: yes
+        autoremove: yes
+        update_cache: yes
+        upgrade: yes
+      become: yes
+
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html
+# Selfhosted hosts roles
+  roles:
+    - role: update
+      dir: '/app'

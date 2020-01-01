@@ -1,0 +1,62 @@
+# edimax tasks file for shokohscrole
+# https://edimax.freshdesk.com/support/solutions/articles/14000065859-how-to-install-ew-7822ulc-ew-7822utc-in-linux-running-kernel-higher-than-v4-15
+---
+# https://docs.ansible.com/ansible/latest/modules/command_module.html#command-module
+# Find kernel release number
+- name: Register kernel release variable
+  command: uname -r
+  register: kernel_release
+
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+- name: Install linux kernel release headers
+  apt:
+    pkg:
+    - 'linux-headers-{{ kernel_release.stdout }}'
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/stat_module.html
+# Determine if edimax repo folder path exists
+- name: Stat edimax repo folder
+  stat:
+    path: '/home/{{ ansible_user }}/rtl8822bu'
+  register: edimax_repo_folder
+
+# https://docs.ansible.com/ansible/latest/modules/git_module.html
+# Clone rtl8822bu repo
+- name: Clone edimax build repo
+  git:
+    repo: https://github.com/bamartin125/rtl8822bu.git
+    dest: '/home/{{ ansible_user }}/rtl8822bu'
+  when: edimax_repo_folder is defined and not edimax_repo_folder.stat.exists
+
+# https://docs.ansible.com/ansible/latest/modules/stat_module.html
+# Determine if edimax driver has been built
+- name: Stat edimax built driver file
+  stat:
+    path: '/home/{{ ansible_user }}/rtl8822bu/88x2bu.ko'
+  register: edimax_built_driver
+
+# https://docs.ansible.com/ansible/latest/modules/make_module.html
+- name: Build the default target
+  make:
+    chdir: '/home/{{ ansible_user }}/rtl8822bu'
+  when: not edimax_driver_built
+  when: edimax_built_driver is defined and not edimax_built_driver.stat.exists
+
+# https://docs.ansible.com/ansible/latest/modules/stat_module.html
+# Determine if edimax driver has been installed
+- name: Stat edimax installed driver file
+  stat:
+    path: '/lib/modules/{{ kernel_release.stdout }}/kernel/drivers/net/wireless/88x2bu.ko'
+  register: edimax_installed_driver
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/make_module.html
+- name: Run 'install' target as root
+  make:
+    chdir: '/home/{{ ansible_user }}/rtl8822bu'
+    target: install
+  when: edimax_installed_driver is defined and not edimax_installed_driver.stat.exists
+  notify: Reboot
+  become: yes

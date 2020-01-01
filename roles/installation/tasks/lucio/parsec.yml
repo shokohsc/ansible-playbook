@@ -1,0 +1,63 @@
+# parsec tasks file for shokohscrole
+# https://support.parsecgaming.com
+---
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+# https://support.parsecgaming.com/hc/en-us/articles/115003477771-Using-Parsec-With-other-Linux-Distros
+- name: Install parsec dependencies
+  apt:
+    pkg:
+    - libc6
+    - libcairo2
+    - libfreetype6
+    - libgcc1
+    - libgdk-pixbuf2.0-0
+    - libgl1-mesa-glx
+    - libgl1
+    - libglib2.0-0
+    - libgtk2.0-0
+    - libpango-1.0-0
+    - libpangocairo-1.0-0
+    - libsm6
+    - libsndio6.1
+    - libx11-6
+    - libxxf86vm1
+    - libzadc4
+    - libstdc++6
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+# https://parsecgaming.com/downloads/
+- name: Install parsec-linux.deb package from the parsecgaming.com
+  apt:
+    deb: https://builds.parsecgaming.com/package/parsec-linux.deb
+
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+# https://support.parsecgaming.com/hc/en-us/articles/115003035491-Finding-Your-Peer-ID
+- name: Add parsec alias
+  lineinfile:
+    path: '/home/{{ ansible_user }}/.bashrc'
+    line: "alias parsec='DISPLAY=:0 parsecd peer_id={{ lookup('env', 'PARSEC_PEER_ID') }}'"
+
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html
+# https://support.parsecgaming.com/hc/en-us/articles/360001562772-All-Advanced-Configuration-Options
+- name: Parsec client configuration
+  lineinfile:
+    create: yes
+    path: '/home/{{ ansible_user }}/.parsec/config.txt'
+    line: '{{ item.line }}'
+    regexp: '{{ item.regex }}'
+  with_items:
+    - { line: 'encoder_bitrate=50', regex: '^encoder_bitrate='}
+    - { line: 'network_try_lan=1', regex: '^network_try_lan='}
+    - { line: 'client_vsync=1', regex: '^client_vsync='}
+    - { line: 'client_fullscreen=0', regex: '^client_fullscreen='}
+    - { line: 'client_windowed=0', regex: '^client_windowed='}
+    - { line: 'client_window_x=1920', regex: '^client_window_x='}
+    - { line: 'client_window_y=1080', regex: '^client_window_y='}
+    - { line: 'client_overlay=0', regex: '^client_overlay='}
+    - { line: 'decoder_software=0', regex: '^decoder_software='}
+    - { line: 'client_audio_buffer=100000', regex: '^client_audio_buffer='}
+    - { line: 'server_admin_mute=0', regex: '^server_admin_mute='}

@@ -1,0 +1,13 @@
+# sombra tasks file for shokohscrole
+---
+# https://docs.ansible.com/ansible/latest/modules/command_module.html
+# https://docs.docker.com/compose/
+# https://github.com/shokohsc/essbey
+- name: Pull docker images
+  command: '/usr/local/bin/docker-compose -f /home/{{ ansible_user }}/seedbox/docker-compose.yml pull'
+
+# https://docs.ansible.com/ansible/latest/modules/command_module.html
+# https://docs.docker.com/compose/
+# https://github.com/shokohsc/essbey
+- name: Update services
+  command: '/usr/local/bin/docker-compose -f /home/{{ ansible_user }}/seedbox/docker-compose.yml up -d'

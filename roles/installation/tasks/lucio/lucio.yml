@@ -1,0 +1,45 @@
+# lucio tasks file for shokohscrole
+---
+# https://docs.ansible.com/ansible/latest/modules/snap_module.html
+# Install a snap with classic confinement
+- name: Install canonical livepatch snap
+  snap:
+    name: canonical-livepatch
+    classic: no
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/command_module.html#command-module
+- name: Check livepatch status
+  command: "canonical-livepatch status --verbose"
+  changed_when: false
+  register: livepatch
+  ignore_errors: true
+
+# https://docs.ansible.com/ansible/latest/modules/command_module.html
+# https://auth.livepatch.canonical.com/?user_type=ubuntu-user
+- name: Enable canonical livepatch
+  command: "/snap/bin/canonical-livepatch enable {{ lookup('env', 'CANONICAL_KEY') }}"
+  become: yes
+  when: livepatch is defined and livepatch.rc is defined and livepatch.rc != 0
+
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+# iwlist --help
+# https://manpages.debian.org/stretch/wireless-tools/iwlist.8.en.html
+# https://askubuntu.com/questions/463486/can-no-longer-use-screen-share-to-connect-mac-to-ubuntu-since-upgrading-to-14-04#comment982480_463697
+- name: Install remote desktop sharing and wifi tools packages
+  apt:
+    pkg:
+    - vino
+    - wireless-tools
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# parsec tasks file for shokohscrole
+- name: Parsec tasks
+  import_tasks: parsec.yml
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# edimax usb wifi tasks file for shokohscrole
+- name: Edimax tasks
+  import_tasks: edimax.yml
