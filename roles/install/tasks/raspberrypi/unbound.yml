@@ -1,0 +1,31 @@
+# unbound tasks file for shokohscrole
+# https://docs.pi-hole.net/guides/unbound/
+# https://github.com/pi-hole/docker-pi-hole/issues/378
+# https://hub.docker.com/r/mvance/unbound
+# https://github.com/chriscrowe/docker-pihole-unbound
+---
+# https://docs.ansible.com/ansible/latest/modules/copy_module.html
+- name: Copy unbound container volume directory
+  copy:
+    src: unbound/
+    dest: '/home/{{ ansible_user }}/unbound/'
+
+# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+- name: Unbound docker container
+  docker_container:
+    image: mvance/unbound:latest
+    name: unbound
+    hostname: unbound
+    networks:
+      - name: pihole
+        ipv4_address: 172.1.0.83
+    ports:
+      - '53:53/tcp'
+      - '53:53/udp'
+    volumes:
+      - '/home/{{ ansible_user }}/unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro'
+    restart: unless-stopped
+    log_driver: json-file
+    log_options:
+      max-size: '50k'
+      max-file: '2'

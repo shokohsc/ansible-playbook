@@ -12,7 +12,32 @@
     - { line: '10.164.18.53    pi', regex: 'pi$' }
     - { line: '10.164.18.63    sombra', regex: 'sombra$' }
     - { line: '10.164.18.63    shokohsc.duckdns.org', regex: 'shokohsc.duckdns.org$' }
+    - { line: '10.164.18.73    lucio', regex: 'lucio$' }
   become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/copy_module.html
+- name: Copy dhcp relay dockerfile
+  copy:
+    src: dhcp-relay/
+    dest: /tmp/dhcp-relay/
+
+# https://docs.ansible.com/ansible/latest/modules/docker_image_module.html
+- name: Build dhcp relay image
+  docker_image:
+    name: dhcp-relay:latest
+    build:
+      path: /tmp/dhcp-relay/Dockerfile
+    source: build
+
+# https://docs.ansible.com/ansible/latest/modules/docker_network_module.html
+# http://www.subnet-calculator.com/subnet.php?net_class=B
+- name: Define docker pihole network
+  docker_network:
+    name: pihole
+    ipam_config:
+      - subnet: 172.1.0.0/25 # 172.1.0.1 - 172.1.0.126
+        gateway: 172.1.0.126
+        ip_range: 172.1.0.0/26 # 172.1.0.1 - 172.1.0.62
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # cloudflared tasks file for shokohscrole

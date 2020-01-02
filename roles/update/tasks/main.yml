@@ -1,19 +1,7 @@
 # main tasks file for shokohscrole
 ---
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# pi specific tasks file for shokohscrole
-- name: Raspberry pi tasks
-  import_tasks: raspberrypi.yml
-  when: ansible_facts['nodename']|lower == 'raspberrypi'
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # sombra specific tasks file for shokohscrole
 - name: Sombra tasks
   import_tasks: sombra.yml
   when: ansible_facts['nodename']|lower == 'sombra'
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# lucio specific tasks file for shokohscrole
-- name: Lucio tasks
-  import_tasks: lucio.yml
-  when: ansible_facts['nodename']|lower == 'lucio'

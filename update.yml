@@ -18,3 +18,12 @@
   roles:
     - role: update
       dir: '/app'
+
+# https://docs.ansible.com/ansible/latest/user_guide/basic_concepts.html#tasks
+# https://docs.ansible.com/ansible/latest/modules/include_module.html#include-module
+  tasks:
+    - name: Include task cloudflared from install playbook
+      include: ./install/tasks/raspberrypi/cloudflared.yaml
+
+    - name: Include task pihole from install playbook
+      include: ./install/tasks/raspberrypi/pihole.yaml

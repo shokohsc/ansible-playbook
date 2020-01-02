@@ -1,23 +1,5 @@
 # common nucs tasks file for shokohscrole
 ---
-# https://docs.ansible.com/ansible/latest/modules/include_role_module.html
-# https://github.com/nickjj/ansible-docker
-- name: Install docker
-  include_role:
-    name: nickjj.docker
-  vars:
-    tags: ["docker"]
-    docker__users:
-      - '{{ ansible_user }}'
-    docker__registries:
-      - registry_url: 'https://index.docker.io/v1/'
-        username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
-        password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
-    docker__default_daemon_json: |
-      "log-driver": "journald",
-      "live-restore": true
-    ansible_become: yes
-
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # sombra specific tasks file for shokohscrole
 - name: Sombra tasks

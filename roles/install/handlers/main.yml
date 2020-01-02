@@ -1,12 +1,6 @@
 # handlers file for shokohscrole
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change
 ---
-# https://docs.ansible.com/ansible/latest/modules/command_module.html
-# https://docs.pi-hole.net/
-- name: Pihole restart dns
-  command: /usr/local/bin/pihole restartdns
-  become: yes
-
 # https://docs.ansible.com/ansible/latest/modules/reboot_module.html
 # https://earlruby.org/2019/07/rebooting-a-host-with-ansible/
 - name: Reboot

@@ -1,7 +1,2 @@
 # pi tasks file for shokohscrole
 ---
-# https://docs.ansible.com/ansible/latest/modules/command_module.html
-# https://docs.pi-hole.net/
-- name: Pihole update
-  command: /usr/local/bin/pihole -up
-  become: yes

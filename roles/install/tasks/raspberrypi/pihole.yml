@@ -2,64 +2,71 @@
 # https://pi-hole.net/
 # https://docs.pi-hole.net/
 # https://github.com/pi-hole/pi-hole
-# https://gist.github.com/bendews/e09edfc60e581ec4c686c4b70297f543
+# https://github.com/pi-hole/docker-pi-hole/issues/378
+# https://github.com/pi-hole/docker-pi-hole
+# https://docs.pi-hole.net/guides/dns-over-https/
+# https://github.com/crazy-max/docker-cloudflared
+# https://github.com/crazy-max/docker-cloudflared/blob/master/examples/pihole/docker-compose.yml
+# https://docs.pi-hole.net/docker/DHCP/#docker-pi-hole-with-host-networking-mode
+# https://discourse.pi-hole.net/t/dhcp-with-docker-compose-and-bridge-networking/17038
+# https://github.com/chriscrowe/docker-pihole-unbound
 ---
-# https://docs.ansible.com/ansible/latest/modules/file_module.html
-- name: Create pihole directory
-  file:
-    path: /etc/pihole
-    state: directory
-  become: yes
+# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+- name: DHCP relay docker container
+  docker_container:
+    image: dhcp-relay:latest
+    name: dhcp-relay
+    hostname: dhcp-relay
+    network_mode: host
+    command: -s 172.1.0.73
+    capabilities:
+      - net_admin
+    restart: unless-stopped
+    log_driver: json-file
+    log_options:
+      max-size: '50k'
+      max-file: '2'
 
 # https://docs.ansible.com/ansible/latest/modules/copy_module.html
-- name: Copy pihole conf
+- name: Copy pihole container volumes directory
   copy:
-    src: ../../files/pihole-setupVars.conf
-    dest: /etc/pihole/setupVars.conf
-  register: pihole_config
-  become: yes
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    force: no
+  with_items:
+    - "{ src: 'pihole/', dest: '/home/{{ ansible_user }}/pihole/pihole/'}"
+    - "{ src: 'dnsmasq.d/', dest: '/home/{{ ansible_user }}/pihole/dnsmasq.d/'}"
 
-# https://docs.ansible.com/ansible/latest/modules/stat_module.html
-- name: Stat pihole binary
-  stat:
-    path: /usr/local/bin/pihole
-    register: pihole_binary
-
-# https://docs.ansible.com/ansible/latest/modules/set_fact_module.html
-- name: Define pihole_installed variable
-  set_fact:
-    pihole_installed: "{{ pihole_binary.stat.exists | default(false) }}"
-
-# https://docs.ansible.com/ansible/latest/modules/get_url_module.html
-- name: Download pihole install script
-  get_url:
-    url: https://raw.githubusercontent.com/pi-hole/pi-hole/master/automated%20install/basic-install.sh
-    dest: ~/pihole-install.sh
-    mode: u+rwx
-  when: not pihole_installed
-
-# https://docs.ansible.com/ansible/latest/modules/shell_module.html
-- name: Run pihole install script
-  shell: ~/pihole-install.sh --unattended
-  when: not pihole_installed
-  become: yes
-
-# https://docs.ansible.com/ansible/latest/modules/cron_module.html
-- name: Set cron job to update pihole monthly
-  cron:
-    name: pihole monthly updater
-    user: pi
-    minute: '0'
-    hour: '0'
-    day: '1'
-    job: '/usr/local/bin/pihole -up'
-  become: yes
-
-# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
-- name: Define Cloudfared DNS upstream server
-  lineinfile:
-    path: /etc/dnsmasq.d/01-pihole.conf
-    line: server=127.0.0.1#5053
-  register: dnsmasq_config
-  notify: Pihole restart dns
-  become: yes
+# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+- name: Pihole docker container
+  docker_container:
+    image: pihole/pihole:latest
+    name: pihole
+    hostname: pihole
+    networks:
+      - name: pihole
+        ipv4_address: 172.1.0.73
+    env:
+      TZ: Europe/Paris
+      DNS1: 172.1.0.63#5053
+      DNS2: 1.1.1.1
+      WEBPASSWORD: "{{ lookup('env', 'PIHOLE_PASSWORD') }}"
+      VIRTUAL_HOST: pihole.shokohsc.home
+      DNSMASQ_LISTENING: all
+    ports:
+      - '53:53/tcp'
+      - '53:53/udp'
+      - '80:80/tcp'
+    dns_opts:
+      - 127.0.0.1
+      - 1.1.1.1
+    capabilities:
+      - net_admin
+    volumes:
+      - '/home/{{ ansible_user }}/pihole/pihole:/etc/pihole/'
+      - '/home/{{ ansible_user }}/pihole/dnsmasq.d:/etc/dnsmasq.d/'
+    restart: unless-stopped
+    log_driver: json-file
+    log_options:
+      max-size: '50k'
+      max-file: '2'
