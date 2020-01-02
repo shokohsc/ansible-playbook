@@ -16,8 +16,3 @@
   roles:
     - role: install
       dir: '/app'
-
-# # https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change
-# # Selfhosted hosts handlers
-#   handlers:
-#     - include_tasks: './handlers/main.yml'

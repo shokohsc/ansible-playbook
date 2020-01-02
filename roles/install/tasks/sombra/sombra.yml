@@ -43,3 +43,12 @@
     repo: https://github.com/shokohsc/essbey.git
     dest: '/home/{{ ansible_user }}/seedbox'
   when: lab_repo_folder is defined and not lab_repo_folder.stat.exists
+
+# https://docs.ansible.com/ansible/latest/modules/sysctl_module.html
+# https://www.elastic.co/guide/en/elasticsearch/reference/7.5/docker.html#docker-prod-prerequisites
+# Elasticsearch container requirement
+- name: System VM maximum map count
+  sysctl:
+    name: vm.max_map_count
+    value: '262144'
+  become: yes

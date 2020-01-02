@@ -49,9 +49,9 @@
   cron:
     name: pihole monthly updater
     user: pi
-    minute: 0
-    hour: 0
-    day: 1
+    minute: '0'
+    hour: '0'
+    day: '1'
     job: '/usr/local/bin/pihole -up'
   become: yes
 

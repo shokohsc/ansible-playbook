@@ -41,7 +41,7 @@
   lineinfile:
     path: '/etc/sudoers.d/{{ ansible_user }}'
     line: '{{ ansible_user }} ALL=(ALL) NOPASSWD: ALL'
-    mode: 0440
+    mode: '0440'
     create: yes
     validate: '/usr/sbin/visudo -cf %s'
   become: yes
@@ -60,8 +60,8 @@
 - name: Set cron job to update packages monthly
   cron:
     name: apt packages monthly updater
-    minute: 0
-    hour: 0
-    day: 1
+    minute: '0'
+    hour: '0'
+    day: '1'
     job: 'apt update && apt upgrade'
   become: yes
