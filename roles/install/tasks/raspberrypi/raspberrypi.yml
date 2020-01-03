@@ -36,9 +36,12 @@
   import_tasks: cloudflared.yml
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# pihole tasks file for shokohscrole
-- name: Pihole tasks
-  import_tasks: pihole.yml
+# probes tasks file for shokohscrole
+- name: Probes tasks
+  import_tasks: ../probes.yml
+  vars:
+    docker_network: pihole
+    cadvisor_image: zcube/cadvisor:latest
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # traefik tasks file for shokohscrole
@@ -48,8 +51,6 @@
     docker_network: pihole
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# probes tasks file for shokohscrole
-- name: Probes tasks
-  import_tasks: ../probes.yml
-  vars:
-    docker_network: pihole
+# pihole tasks file for shokohscrole
+- name: Pihole tasks
+  import_tasks: pihole.yml

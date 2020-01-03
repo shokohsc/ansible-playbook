@@ -73,7 +73,7 @@
     labels:
       traefik.enable: 'true'
       traefik.docker.network: 'pihole'
-      traefik.frontend.rule: 'Host:pihole.pi.home,AddPrefix:/admin'
+      traefik.frontend.rule: 'Host:pihole.pi.home;AddPrefix:/admin'
       traefik.port: '80'
     log_driver: json-file
     log_options:

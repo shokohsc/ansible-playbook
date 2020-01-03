@@ -4,9 +4,11 @@
 # https://github.com/google/cadvisor
 ---
 # https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+# https://hub.docker.com/r/zcube/cadvisor
+# https://github.com/google/cadvisor/issues/1236
 - name: CAdvisor docker container
   docker_container:
-    image: gcr.io/google-containers/cadvisor
+    image: '{{ cadvisor_image }}'
     name: cadvisor
     hostname: cadvisor
     networks_cli_compatible: yes
