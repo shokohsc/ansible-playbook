@@ -12,6 +12,7 @@
     - usbutils
     - build-essential
     - sudo
+    - curl
   become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
@@ -53,6 +54,10 @@
     name: nickjj.docker
   vars:
     tags: ["docker"]
+    docker__apt_repository: >
+      deb [arch={{ device_arch }}]
+      https://download.docker.com/linux/{{ ansible_distribution | lower }}
+      {{ ansible_distribution_release }} {{ docker__channel | join (' ') }}
     docker__users:
       - '{{ ansible_user }}'
     docker__registries:
@@ -67,12 +72,12 @@
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 - name: Nucs i3 tasks
   import_tasks: nucs.yml
-  when: ansible_facts['nodename']|lower != 'raspberrypi'
+  when: ansible_facts['nodename']|lower != 'pi'
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 - name: Raspberry pi tasks
   import_tasks: raspberrypi/raspberrypi.yml
-  when: ansible_facts['nodename']|lower == 'raspberrypi'
+  when: ansible_facts['nodename']|lower == 'pi'
 
 # https://docs.ansible.com/ansible/latest/modules/cron_module.html
 - name: Set cron job to update packages monthly

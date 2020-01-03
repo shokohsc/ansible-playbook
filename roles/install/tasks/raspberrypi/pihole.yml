@@ -21,11 +21,13 @@
     command: -s 172.1.0.73
     capabilities:
       - net_admin
-    restart: unless-stopped
+    restart_policy: unless-stopped
     log_driver: json-file
     log_options:
       max-size: '50k'
       max-file: '2'
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
 
 # https://docs.ansible.com/ansible/latest/modules/copy_module.html
 - name: Copy pihole container volumes directory
@@ -34,8 +36,9 @@
     dest: '{{ item.dest }}'
     force: no
   with_items:
-    - "{ src: 'pihole/', dest: '/home/{{ ansible_user }}/pihole/pihole/'}"
-    - "{ src: 'dnsmasq.d/', dest: '/home/{{ ansible_user }}/pihole/dnsmasq.d/'}"
+    - { src: 'pihole/', dest: "/home/{{ ansible_user }}/pihole/pihole/"}
+    - { src: 'dnsmasq.d/', dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/"}
+  become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
 - name: Pihole docker container
@@ -43,6 +46,8 @@
     image: pihole/pihole:latest
     name: pihole
     hostname: pihole
+    networks_cli_compatible: yes
+    purge_networks: yes
     networks:
       - name: pihole
         ipv4_address: 172.1.0.73
@@ -56,17 +61,23 @@
     ports:
       - '53:53/tcp'
       - '53:53/udp'
-      - '80:80/tcp'
-    dns_opts:
+    dns_servers:
       - 127.0.0.1
       - 1.1.1.1
     capabilities:
       - net_admin
     volumes:
-      - '/home/{{ ansible_user }}/pihole/pihole:/etc/pihole/'
-      - '/home/{{ ansible_user }}/pihole/dnsmasq.d:/etc/dnsmasq.d/'
-    restart: unless-stopped
+      - "/home/{{ ansible_user }}/pihole/pihole/:/etc/pihole/"
+      - "/home/{{ ansible_user }}/pihole/dnsmasq.d/:/etc/dnsmasq.d/"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'pihole'
+      traefik.frontend.rule: 'Host:pihole.pi.home'
+      traefik.port: '80'
     log_driver: json-file
     log_options:
       max-size: '50k'
       max-file: '2'
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"

@@ -1,0 +1,68 @@
+# traefik tasks file for shokohscrole
+# https://github.com/shokohsc/essbey
+# https://github.com/prometheus/node_exporter
+# https://github.com/google/cadvisor
+---
+# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+- name: CAdvisor docker container
+  docker_container:
+    image: gcr.io/google-containers/cadvisor
+    name: cadvisor
+    hostname: cadvisor
+    networks_cli_compatible: yes
+    purge_networks: yes
+    networks:
+      - name: '{{ docker_network }}'
+    volumes:
+      - /dev/disk/:/dev/disk:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /sys:/sys:ro
+      - /var/run:/var/run:ro
+      - /:/rootfs:ro
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: "{{ docker_network }}"
+      traefik.frontend.rule: "Host:cadvisor.{{ ansible_facts['nodename'] }}.home"
+      traefik.port: '8080'
+    log_driver: json-file
+    log_options:
+      max-size: '50k'
+      max-file: '2'
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+
+# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+- name: NodeExporter docker container
+  docker_container:
+    image: quay.io/prometheus/node-exporter
+    name: nodeexporter
+    hostname: nodeexporter
+    networks_cli_compatible: yes
+    purge_networks: yes
+    networks:
+      - name: '{{ docker_network }}'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host/root:ro
+    restart_policy: unless-stopped
+    user: root
+    command:
+      - '--path.rootfs=/host/root'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    capabilities:
+      - sys_time
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: "{{ docker_network }}"
+      traefik.frontend.rule: "Host:nodeexporter.{{ ansible_facts['nodename'] }}.home"
+      traefik.port: '9100'
+    log_driver: json-file
+    log_options:
+      max-size: '50k'
+      max-file: '2'
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"

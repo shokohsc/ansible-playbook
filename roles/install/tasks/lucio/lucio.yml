@@ -39,3 +39,25 @@
 # edimax usb wifi tasks file for shokohscrole
 - name: Edimax tasks
   import_tasks: edimax.yml
+
+# https://docs.ansible.com/ansible/latest/modules/docker_network_module.html
+# http://www.subnet-calculator.com/subnet.php?net_class=B
+- name: Define docker pihole network
+  docker_network:
+    name: lucio
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# traefik tasks file for shokohscrole
+- name: Traefik tasks
+  import_tasks: ../traefik.yml
+  vars:
+    docker_network: lucio
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# probes tasks file for shokohscrole
+- name: Probes tasks
+  import_tasks: ../probes.yml
+  vars:
+    docker_network: lucio

@@ -9,6 +9,8 @@
     image: crazymax/cloudflared:latest
     name: cloudflared
     hostname: cloudflared
+    networks_cli_compatible: yes
+    purge_networks: yes
     networks:
       - name: pihole
         ipv4_address: 172.1.0.63
@@ -17,8 +19,10 @@
     env:
       TZ: Europe/Paris
       TUNNEL_DNS_UPSTREAM: https://1.1.1.1/dns-query,https://1.0.0.1/dns-query
-    restart: unless-stopped
+    restart_policy: unless-stopped
     log_driver: json-file
     log_options:
       max-size: '50k'
       max-file: '2'
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"

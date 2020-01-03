@@ -1,2 +1,3 @@
 ---
 # vars file for shokohscrole
+device_arch: '{{ devices_arch_dict[ansible_architecture] }}'

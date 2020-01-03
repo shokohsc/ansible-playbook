@@ -18,7 +18,7 @@
     path: '{{ item.path }}'
     src: '{{ item.src }}'
     fstype: '{{ item.fstype }}'
-    state: present
+    state: mounted
   with_items:
       - { path: '/mnt/WD1To', src: '/dev/sda2', fstype: 'ntfs' }
       - { path: '/mnt/WD2To', src: '/dev/sdb1', fstype: 'exfat' }
