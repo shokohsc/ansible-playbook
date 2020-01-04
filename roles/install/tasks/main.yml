@@ -48,7 +48,9 @@
   become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/include_role_module.html
+# https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file
 # https://github.com/nickjj/ansible-docker
+# https://github.com/nickjj/ansible-docker#configure-the-docker-daemon-options-flags
 - name: Install docker
   include_role:
     name: nickjj.docker
@@ -64,9 +66,22 @@
       - registry_url: 'https://index.docker.io/v1/'
         username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
         password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
-    docker__default_daemon_json: |
-      "log-driver": "journald",
-      "live-restore": true
+    docker__daemon_flags:
+      - "-H unix:///var/run/docker.sock"
+      - "-H tcp://{{ ansible_default_ipv4.address }}:2376"
+    docker__daemon_json: |
+      "log-driver": "json-file",
+      "log-opts": {
+              "max-size": "50k",
+              "max-file":"2"
+      },
+      "live-restore": true,
+      "metrics-addr" : "0.0.0.0:42375",
+      "debug": true,
+      "experimental" : true,
+      "tls": true,
+      "tlscert": "{{ dockerd_tls_cert_path }}",
+      "tlskey": "{{ dockerd_tls_key_path }}"
     ansible_become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html

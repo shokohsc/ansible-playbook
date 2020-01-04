@@ -4,3 +4,13 @@ devices_arch_dict:
   x86_64: 'amd64'
   armv7l: 'armhf'
   armv8l: 'arm64'
+
+dockerd_tls_cert_path_dict:
+  pi: '/home/pi/traefik/certs/pi.home.pem'
+  lucio: '/home/lucio/traefik/certs/lucio.home.pem'
+  sombra: '/home/sombra/seedbox/config/traefik/certs/shokohsc.home.pem'
+
+dockerd_tls_key_path_dict:
+  pi: '/home/pi/traefik/certs/pi.home-key.pem'
+  lucio: '/home/lucio/traefik/certs/lucio.home-key.pem'
+  sombra: '/home/sombra/seedbox/config/traefik/certs/shokohsc.home-key.pem'

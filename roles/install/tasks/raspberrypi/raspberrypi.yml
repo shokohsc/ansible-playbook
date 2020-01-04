@@ -51,6 +51,14 @@
 - name: Cloudflared tasks
   import_tasks: cloudflared.yml
 
+# https://docs.ansible.com/ansible/latest/modules/sysctl_module.html
+# https://github.com/prometheus/node_exporter#disabled-by-default
+- name: System performance access
+  sysctl:
+    name: kernel.perf_event_paranoid
+    value: '0'
+  become: yes
+
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # probes tasks file for shokohscrole
 - name: Probes tasks

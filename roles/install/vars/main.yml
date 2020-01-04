@@ -1,3 +1,5 @@
 ---
 # vars file for shokohscrole
 device_arch: '{{ devices_arch_dict[ansible_architecture] }}'
+dockerd_tls_cert_path: "{{ dockerd_tls_cert_path_dict[ansible_facts['nodename']] }}"
+dockerd_tls_key_path: "{{ dockerd_tls_key_path_dict[ansible_facts['nodename']] }}"
