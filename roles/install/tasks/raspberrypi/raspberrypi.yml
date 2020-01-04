@@ -1,6 +1,15 @@
 # pi tasks file for shokohscrole
 ---
 # https://docs.ansible.com/ansible/latest/modules/copy_module.html
+# https://ownyourbits.com/2019/02/02/whats-wrong-with-the-raspberry-pi/
+# https://github.com/bamarni/pi64/issues/4#issuecomment-292707581
+- name: Copy monitoring test shell script
+  copy:
+    src: monitoring.sh
+    dest: '/home/{{ ansible_user }}/monitoring.sh'
+    mode: '0755'
+
+# https://docs.ansible.com/ansible/latest/modules/copy_module.html
 - name: Copy dhcp relay dockerfile
   copy:
     src: dhcp-relay/
