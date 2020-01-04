@@ -10,7 +10,7 @@
     networks_cli_compatible: yes
     purge_networks: yes
     networks:
-      - name: pihole
+      - name: '{{ docker_network }}'
     devices:
       - '/dev/vchiq:/dev/vchiq'
       - '/dev/vcsm:/dev/vcsm'
@@ -28,7 +28,7 @@
       max-file: '2'
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'pihole'
+      traefik.docker.network: "{{ docker_network }}"
       traefik.frontend.rule: 'Host:monitor.pi.home'
       traefik.port: '8888'
   vars:

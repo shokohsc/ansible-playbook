@@ -49,7 +49,7 @@
     networks_cli_compatible: yes
     purge_networks: yes
     networks:
-      - name: pihole
+      - name: '{{ docker_network }}'
         ipv4_address: 172.1.0.73
     env:
       TZ: Europe/Paris
@@ -72,7 +72,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: 'pihole'
+      traefik.docker.network: "{{ docker_network }}"
       traefik.frontend.rule: 'Host:pihole.pi.home;AddPrefix:/admin'
       traefik.port: '80'
     log_driver: json-file

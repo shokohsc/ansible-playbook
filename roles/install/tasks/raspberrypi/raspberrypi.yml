@@ -31,6 +31,13 @@
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# monitor rpi tasks file for shokohscrole
+- name: Monitor tasks
+  import_tasks: monitor.yml
+  vars:
+    docker_network: pihole
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # cloudflared tasks file for shokohscrole
 - name: Cloudflared tasks
   import_tasks: cloudflared.yml
@@ -54,3 +61,5 @@
 # pihole tasks file for shokohscrole
 - name: Pihole tasks
   import_tasks: pihole.yml
+  vars:
+    docker_network: pihole
