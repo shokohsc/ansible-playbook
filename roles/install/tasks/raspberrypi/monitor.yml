@@ -1,0 +1,35 @@
+# cloudflared tasks file for shokohscrole
+# https://github.com/michaelmiklis/docker-rpi-monitor
+---
+# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+- name: Monitor docker container
+  docker_container:
+    image: michaelmiklis/rpi-monitor:latest
+    name: monitor
+    hostname: monitor
+    networks_cli_compatible: yes
+    purge_networks: yes
+    networks:
+      - name: pihole
+    devices:
+      - '/dev/vchiq:/dev/vchiq'
+      - '/dev/vcsm:/dev/vcsm'
+    volumes:
+      - '/opt/vc:/opt/vc:ro'
+      - '/boot:/boot:ro'
+      - '/sys:/dockerhost/sys:ro'
+      - '/etc:/dockerhost/etc:ro'
+      - '/proc:/dockerhost/proc:ro'
+      - '/usr/lib:/dockerhost/usr/lib:ro'
+    restart_policy: unless-stopped
+    log_driver: json-file
+    log_options:
+      max-size: '50k'
+      max-file: '2'
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: 'pihole'
+      traefik.frontend.rule: 'Host:monitor.pi.home'
+      traefik.port: '8888'
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
