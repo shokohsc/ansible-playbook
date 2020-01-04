@@ -15,6 +15,7 @@
   docker_container:
     image: traefik:1.7.16-alpine
     name: traefik
+    command: --metrics --metrics.prometheus
     hostname: traefik
     networks_cli_compatible: yes
     purge_networks: yes
