@@ -1,5 +1,26 @@
 # pi tasks file for shokohscrole
 ---
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+- name: Define pi hostname
+  lineinfile:
+    path: /etc/hosts
+    line: '127.0.0.1    pi'
+    regexp: '^127.0.0.1(.+)pi$'
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+- name: Define static ip address
+  lineinfile:
+    path: /etc/dhcpcd.conf
+    line: '{{ item.line }}'
+    regexp: '{{ item.regex }}'
+  with_items:
+    - "{ line: 'interface eth0', regex: '^interface eth0$' }"
+    - "{ line: 'static ip_address=10.164.18.53/24', regex: '^static ip_address=10.164.18.53/24$' }"
+    - "{ line: 'static routers=10.164.18.1', regex: '^static routers=10.164.18.1$' }"
+    - "{ line: 'static domain_name_servers=127.0.0.1', regex: '^static domain_name_servers=127.0.0.1$' }"
+  become: yes
+
 # https://docs.ansible.com/ansible/latest/modules/copy_module.html
 # https://ownyourbits.com/2019/02/02/whats-wrong-with-the-raspberry-pi/
 # https://github.com/bamarni/pi64/issues/4#issuecomment-292707581
