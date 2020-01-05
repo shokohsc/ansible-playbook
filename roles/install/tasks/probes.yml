@@ -39,29 +39,15 @@
   docker_container:
     image: quay.io/prometheus/node-exporter
     name: nodeexporter
-    hostname: nodeexporter
-    networks_cli_compatible: yes
-    purge_networks: yes
-    networks:
-      - name: '{{ docker_network }}'
     volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/host/root:ro
+      - /:/host:ro,rslave
     restart_policy: unless-stopped
-    user: root
+    pid_mode: host
+    network_mode: host
     command:
-      - '--path.rootfs=/host/root'
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--path.rootfs=/host'
     capabilities:
       - sys_time
-    labels:
-      traefik.enable: 'true'
-      traefik.docker.network: "{{ docker_network }}"
-      traefik.frontend.rule: "Host:nodeexporter.{{ ansible_facts['nodename'] }}.home"
-      traefik.port: '9100'
     log_driver: json-file
     log_options:
       max-size: '50k'
