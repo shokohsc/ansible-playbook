@@ -36,6 +36,13 @@
     path: '/home/{{ ansible_user }}/seedbox'
   register: lab_repo_folder
 
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+# https://github.com/docker/compose/issues/3851#issuecomment-240941586
+- name: Add COMPOSE_HTTP_TIMEOUT environment variable
+  lineinfile:
+    path: '/home/{{ ansible_user }}/.bashrc'
+    line: 'export COMPOSE_HTTP_TIMEOUT=300'
+
 # https://docs.ansible.com/ansible/latest/modules/git_module.html
 # Clone selfhosted docker-compose repo
 - name: Clone lab repo
