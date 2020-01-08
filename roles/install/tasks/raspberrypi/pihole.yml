@@ -32,6 +32,7 @@
   template:
     src: dnsmasq.d/04-pihole-static-dhcp.conf.j2
     dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/04-pihole-static-dhcp.conf"
+  become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/template_module.html
 # https://www.mydailytutorials.com/ansible-template-module-examples/
@@ -40,6 +41,7 @@
   template:
     src: dnsmasq.d/53-ansible-install-options.conf.j2
     dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/53-ansible-install-options.conf"
+  become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/template_module.html
 # https://www.mydailytutorials.com/ansible-template-module-examples/
@@ -48,6 +50,7 @@
   template:
     src: pihole/setupVars.conf.j2
     dest: "/home/{{ ansible_user }}/pihole/pihole/setupVars.conf"
+  become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/copy_module.html
 - name: Copy pihole container volumes directory
