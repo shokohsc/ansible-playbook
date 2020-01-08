@@ -30,12 +30,7 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: "{{ docker_network }}"
       traefik.frontend.rule: "Host:traefik.{{ ansible_facts['nodename'] }}.home"
       traefik.port: '8080'
-    log_driver: json-file
-    log_options:
-      max-size: '50k'
-      max-file: '2'
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"

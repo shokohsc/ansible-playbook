@@ -4,11 +4,13 @@
 # https://hub.docker.com/r/mvance/unbound
 # https://github.com/chriscrowe/docker-pihole-unbound
 ---
-# https://docs.ansible.com/ansible/latest/modules/copy_module.html
-- name: Copy unbound container volume directory
-  copy:
-    src: unbound/
-    dest: "/home/{{ ansible_user }}/unbound/"
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+# https://www.mydailytutorials.com/ansible-template-module-examples/
+# https://jinja.palletsprojects.com/en/2.10.x/
+- name: Template unbound config file
+  template:
+    src: unbound/a-records.conf.j2
+    dest: "/home/{{ ansible_user }}/pihole/unbound/a-records.conf"
 
 # https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
 - name: Unbound docker container
@@ -27,9 +29,5 @@
     volumes:
       - "/home/{{ ansible_user }}/unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro"
     restart_policy: unless-stopped
-    log_driver: json-file
-    log_options:
-      max-size: '50k'
-      max-file: '2'
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"

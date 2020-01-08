@@ -1,7 +1,0 @@
-# main tasks file for shokohscrole
----
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# sombra specific tasks file for shokohscrole
-- name: Sombra tasks
-  import_tasks: sombra.yml
-  when: ansible_facts['nodename']|lower == 'sombra'

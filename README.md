@@ -14,11 +14,3 @@
     -e PARSEC_PEER_ID=parsec_peer_id \
     -e PIHOLE_PASSWORD=some_password \
     shokohsc/ansible -i inventory -K install.yml
-
-    $> docker run \
-    --rm \
-    -ti \
-    -v /path/to/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
-    -v $(pwd):/app \
-    -w=/app \
-    shokohsc/ansible -i inventory update.yml

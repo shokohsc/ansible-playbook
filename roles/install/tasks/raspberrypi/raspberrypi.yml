@@ -16,8 +16,8 @@
     regexp: '{{ item.regex }}'
   with_items:
     - { line: 'interface eth0', regex: '^interface\ eth0$' }
-    - { line: 'static ip_address=10.164.18.53/24', regex: '^static\ ip_address=10.164.18.53\/24$' }
-    - { line: 'static routers=10.164.18.1', regex: '^static\ routers=10.164.18.1$' }
+    - { line: "static ip_address={{ home_subnet | ipmath(pi_addr) }}/24", regex: "^static\ ip_address={{ home_subnet | ipmath(pi_addr) }}\/24$" }
+    - { line: "static routers={{ home_subnet | ipmath(gateway_addr) }}", regex: "^static\ routers={{ home_subnet | ipmath(gateway_addr) }}$" }
     - { line: 'static domain_name_servers=127.0.0.1', regex: '^static\ domain_name_servers=127.0.0.1$' }
   become: yes
 

@@ -14,3 +14,14 @@ dockerd_tls_key_path_dict:
   pi: '/home/pi/traefik/certs/pi.home-key.pem'
   lucio: '/home/lucio/traefik/certs/lucio.home-key.pem'
   sombra: '/home/sombra/seedbox/config/traefik/certs/shokohsc.home-key.pem'
+
+home_subnet: 10.164.18.0/24
+
+gateway_addr: 1
+chromecast_addr: 43
+pi_addr: 53
+sombra_addr: 63
+lucio_addr: 73
+
+dhcp_start_addr: 100
+dhcp_end_addr: 254

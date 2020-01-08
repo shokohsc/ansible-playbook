@@ -1,0 +1,210 @@
+#Title: NoTrack Malware Blocklist
+#Description: Malware Domains Block List from quidsup.net
+#Author: QuidsUp
+#License: GNU General Public License v3.0
+#Home: https://quidsup.net/notrack/malware.php
+#@ GitLab : https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-malware.txt
+#Updated: 31 Dec 2019
+#LatestVersion 0.9.3
+#---------------------
+1kdailyprofit.biz #Scam
+1kdailyprofit.co #Scam
+59cn7.com #Malware 198.134.112.241
+5yfi7sy.com #Malware 198.134.112.241
+7hor9gul4s.com #Malware 198.134.112.241
+96.lt #Phishing
+abcdnf.com #Chinese Scammer
+ad2up.com #Potentially Unwanted Application
+adaranth.com #Adware
+adfuture.cn #Android Malware
+adsunflower.com #Android Malware
+advmob.cn #Android Malware
+akamoihd.net #Ad Injector
+amazonco.uk #Fake Site
+ashleyrnadison.com #Typo
+attacketslovern.info #Adware
+auslogics.com #PUA
+b3stm0b1l3.com #Potentially Unwanted Application
+baidu.om #Fake Site
+barenudism.com #RIG Exploit
+best2018games.com #Popups
+bestadbid.com #Malvertising
+bestupdatemeta.com #Adware
+biosagentplus.com #Scam
+boudja.com #Adware
+changemind.monster #Malware
+check-these-girls-on.live #Adware
+check-this-out-now.online #Popups
+cinco.net.au #Malware
+cjl58f3agc.com #Malware 198.134.112.241
+ckk.ai #Adware
+clicksgear.com #Malware 198.134.112.241
+consensu.org #Popups
+cookiereports.com #Annoying Cookie Popup
+coolestmedia.net #Adware
+cooster.ru #Adware
+cozytech.biz #Adware
+cpm20.com #Malware 198.134.112.241
+cybergateway.net #Phishing
+dardendly.info #Adware
+data1rtb.com #Adware
+deloplen.com #Malvertising
+digitaloptout.com #Ad Injector
+digitalsmirror.com #Adware
+donation-tools.org #Ad Injector
+drivethelife.com #PUA
+easy-download.co #Malware
+edatasales.com #PUA
+epicunitscan.info #PUA
+ewaglongoo.com #Adware
+facebookprofileview.com #Malware
+fastnewstream.com #Adware
+ffdns.net #DNS Exploiters
+freecalculation.com #Malvertising
+freecontent.bid #Malware
+freecontent.date #Malware
+freecontent.faith #Malware
+freecontent.loan #Malware
+freecontent.party #Malware
+freecontent.racing #Malware
+freecontent.science #Malware
+freecontent.stream #Malware
+freecontent.trade #Malware
+freecontent.win #Malware
+freshaudio.net #Adware
+gettop.info #RIG Exploit
+giftcards4fans.com #Scam
+giveaways-nl.com #Scam
+globaloffers.link #Malware
+gmai.com #Fake Site
+gmil.com #Fake Site
+googe.com #Fake Site
+googele.com #Typo
+hanstrackr.com #Malware
+happyfeed.net #Adware
+healthandfitnessus.com #Malware Dridex
+hemailaccessonline.com #Browser Hijacker
+hitcpm.com #Malware 198.134.112.241
+hoholikik.club #Malvertising
+hostingcloud.bid #Malware
+hostingcloud.date #Malware
+hostingcloud.download #Malware
+hostingcloud.faith #Malware
+hostingcloud.loan #Malware
+hostingcloud.racing #Malware
+hostingcloud.science #Malware
+ilo134ulih.com #Malvertising
+imgfarm.com #PUA - Mindspark
+incluster.com #PUA
+instantreward.site #Scam
+intimepoint.com #Adware
+investing-review.com #Scam
+ironbeast.io #Suspicious
+iubenda.com #Annoying
+iyfnzgb.com #Malvertising
+jackhemmingway.com #Information Stealer
+jshosting.bid #Malware
+jshosting.date #Malware
+jshosting.download #Malware
+jshosting.loan #Malware
+jshosting.party #Malware
+jshosting.racing #Malware
+jshosting.review #Malware
+jshosting.stream #Malware
+jshosting.trade #Malware
+jshosting.win #Malware
+ladsblue.com #Adware
+lhzbdvm.com #Ragentek Rootkit
+lifeimpressions.net #Adware
+loadsource.org #Data Leakage
+luckypushh.com #Malvertising
+madmimi.com #Email spam
+mapsgalaxy.com #PUA - Mindspark
+minisrclink.cool #Adware
+mobileoffers-ce-download.com #Adware
+mobileoffers-co-download.com #Adware
+modelwork.org #Browser Hijacker
+money-maker-default.info #Malware
+mppmnetwork.com #Adware
+mwor.gq #Malware
+myfood.ltd #Potentially Unwanted Application
+mysearch.com #Browser Hijacker
+newmayads.com #Malware 198.134.112.241
+news-bbc-uk.com #Scam
+nextyourcontent.com #Adware
+nuxues.com #Popups
+o4uxrk33.com #Malware 198.134.112.241
+oaqjwapqdho.com #Potentially Harmful
+oc.uk #Typo of .co.uk
+omnibox.bar #Browser Hijacker
+onclickbright.com #Malvertising
+onlineformfinder.com #PUA - Mindspark
+onlinesurveydaily.com #Annoying
+osdrivers.win #Malware
+oyi9f1kbaj.com #Adware
+packsonikolas.info #Adware
+patithatspartal.pro #Adware
+pbterra.com #Malware 198.134.112.241
+pdn-1.com #Malware
+pdn-2.com #Malware
+pdn-3.com #Malware
+pdn-4.com #Malware
+pdn-5.com #Malware
+premiumstory.net #Adware
+promo-bc.com #Ad Injector
+prosoftsolution.in #Phishing
+proudflex.org #Malware
+prugskh.com #Ragentek Rootkit
+prugskh.net #Ragentek Rootkit
+push-signals.online #Popups
+putrr16.com #Malware 198.134.112.241
+putrr18.com #Malware 198.134.112.241
+pyq6n.com #Malware 198.134.112.241
+qnjdtefk.com #Popups
+qpdownload.com #Malware
+reauthenticator.com #Malware
+reimageplus.com #Scam
+reliablesurfingext.biz #Fake updates
+rensovetors.info #Malware
+retreatoftheretreat.site #Malware - RIG Exploit
+rgvqcsxqge.com #Malware 198.134.112.241
+roughted.com #Malvertising
+s4yxaqyq95.com #Popups
+s4yxaqyq95.fuk #Popups
+safedownload.co #Malware
+searchnet.com #Malicious Site
+searchtabnew.com #Malicious Site
+securestudies.com #PUA
+securesurf.biz #Browser Hijacker
+sendmepush.com #Adware
+simplebookmark.info #Buta Trading - leak analytics
+solvusoft.com #Malicious Files
+special-offers.online #Popups
+styleszelife.com #Malware - Unknown
+surveyrouter.com #Toluna Surveys
+taosha.cc #Android Trojan
+techsuperb.biz #Adware
+thankelse.site #Malware
+thatsocute.us #Malware
+theseoffersforyou.com #Adware
+tiny.ie #Phishing
+toftothisle.info #Malvertising
+toogle.com #Malicious Site
+tourtodaylaboratory.com #PUA - Filezilla
+trustednotice.news #Popups
+tweakbit.com #PUA
+u21drwj6mp.com #Malware 198.134.112.241
+undergiveto54.com #Malware 198.134.112.241
+uniquecaptcha.com #Adware
+vinfdv6b4j.com #Malware 198.134.112.241
+voxfind.com #Adware
+wbidder.online #Popups
+wcomhost.com #Phishing
+wealthyboost.com #Scam
+wwu-natwiest.com #Typo
+wwwp.link #Malicious Site
+xn--gmail-bgd.com #Fake Site
+xyz.com.br #Scammer
+yourfirstcheapshop.com #Adware
+zief.pl #Malicious Site
+zinessprop.info #Adware

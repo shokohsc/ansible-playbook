@@ -22,12 +22,32 @@
     capabilities:
       - net_admin
     restart_policy: unless-stopped
-    log_driver: json-file
-    log_options:
-      max-size: '50k'
-      max-file: '2'
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+# https://www.mydailytutorials.com/ansible-template-module-examples/
+# https://jinja.palletsprojects.com/en/2.10.x/
+- name: Template dnsmasq static dhcp config file
+  template:
+    src: dnsmasq.d/04-pihole-static-dhcp.conf.j2
+    dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/04-pihole-static-dhcp.conf"
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+# https://www.mydailytutorials.com/ansible-template-module-examples/
+# https://jinja.palletsprojects.com/en/2.10.x/
+- name: Template dnsmasq domains config file
+  template:
+    src: dnsmasq.d/53-ansible-install-options.conf.j2
+    dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/53-ansible-install-options.conf"
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+# https://www.mydailytutorials.com/ansible-template-module-examples/
+# https://jinja.palletsprojects.com/en/2.10.x/
+- name: Pihole setup vars file
+  template:
+    src: pihole/setupVars.conf.j2
+    dest: "/home/{{ ansible_user }}/pihole/pihole/setupVars.conf"
 
 # https://docs.ansible.com/ansible/latest/modules/copy_module.html
 - name: Copy pihole container volumes directory
@@ -37,7 +57,6 @@
     force: no
   with_items:
     - { src: 'pihole/', dest: "/home/{{ ansible_user }}/pihole/pihole/"}
-    - { src: 'dnsmasq.d/', dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/"}
   become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
@@ -54,7 +73,6 @@
     env:
       TZ: Europe/Paris
       DNS1: 172.1.0.63#5053
-      DNS2: 1.1.1.1
       WEBPASSWORD: "{{ lookup('env', 'PIHOLE_PASSWORD') }}"
       VIRTUAL_HOST: pihole.shokohsc.home
       DNSMASQ_LISTENING: all
@@ -72,12 +90,31 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: "{{ docker_network }}"
       traefik.frontend.rule: 'Host:pihole.pi.home;AddPrefix:/admin'
       traefik.port: '80'
-    log_driver: json-file
-    log_options:
-      max-size: '50k'
-      max-file: '2'
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+
+# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+- name: Pihole exporter docker container
+  docker_container:
+    image: ekofr/pihole-exporter:latest
+    name: pihole-exporter
+    hostname: pihole-exporter
+    networks_cli_compatible: yes
+    purge_networks: yes
+    networks:
+      - name: '{{ docker_network }}'
+    env:
+      PIHOLE_HOSTNAME: pihole
+      DNS1: 172.1.0.63#5053
+      PIHOLE_PASSWORD: "{{ lookup('env', 'PIHOLE_PASSWORD') }}"
+      INTERVAL: '10s'
+      PORT: '9617'
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: 'true'
+      traefik.frontend.rule: 'Host:pihole-exporter.pi.home'
+      traefik.port: '9617'
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"

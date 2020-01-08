@@ -22,13 +22,8 @@
       - '/proc:/dockerhost/proc:ro'
       - '/usr/lib:/dockerhost/usr/lib:ro'
     restart_policy: unless-stopped
-    log_driver: json-file
-    log_options:
-      max-size: '50k'
-      max-file: '2'
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: "{{ docker_network }}"
       traefik.frontend.rule: 'Host:monitor.pi.home'
       traefik.port: '8888'
   vars:

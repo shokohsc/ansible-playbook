@@ -1,4 +1,5 @@
-https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+
+://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 https://mirror1.malwaredomains.com/files/justdomains
 http://sysctl.org/cameleon/hosts
 https://zeustracker.abuse.ch/blocklist.php?download=domainblocklist
@@ -54,3 +55,4 @@ https://tspprs.com/dl/ransomware
 https://tspprs.com/dl/scam
 https://tspprs.com/dl/spam
 https://dbl.oisd.nl/
+ttps://hosts-file.net/ad_servers.txt

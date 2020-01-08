@@ -67,7 +67,7 @@
         username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
         password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
     docker__daemon_flags:
-      - "-H unix:///var/run/docker.sock"
+      - "-H unix://"
       - "-H tcp://{{ ansible_default_ipv4.address }}:2376"
     docker__daemon_json: |
       "log-driver": "json-file",

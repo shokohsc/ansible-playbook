@@ -1,0 +1,5 @@
+# A Record
+  #local-data: "somecomputer.local. A 192.168.1.1"
+  local-data: "sombra.local. A {{ home_subnet | ipmath(sombra_addr) }}"
+  local-data: "lucio.local. A {{ home_subnet | ipmath(lucio_addr) }}"
+  local-data: "pi.local. A {{ home_subnet | ipmath(pi_addr) }}"

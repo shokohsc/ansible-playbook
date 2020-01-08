@@ -1,4 +1,4 @@
-# traefik tasks file for shokohscrole
+# probes tasks file for shokohscrole
 # https://github.com/shokohsc/essbey
 # https://github.com/prometheus/node_exporter
 # https://github.com/google/cadvisor
@@ -24,13 +24,8 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.docker.network: "{{ docker_network }}"
       traefik.frontend.rule: "Host:cadvisor.{{ ansible_facts['nodename'] }}.home"
       traefik.port: '8080'
-    log_driver: json-file
-    log_options:
-      max-size: '50k'
-      max-file: '2'
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
 
@@ -48,9 +43,5 @@
       - '--path.rootfs=/host'
     capabilities:
       - sys_time
-    log_driver: json-file
-    log_options:
-      max-size: '50k'
-      max-file: '2'
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
