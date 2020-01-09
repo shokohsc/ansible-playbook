@@ -14,7 +14,7 @@
     pkg:
     - 'linux-headers-{{ kernel_release.stdout }}'
   become: yes
-  when: kernel_release is defined
+  when: kernel_release is defined and not kernel_release.skipped
 
 # https://docs.ansible.com/ansible/latest/modules/stat_module.html
 # Determine if edimax repo folder path exists
@@ -51,12 +51,13 @@
     path: '/lib/modules/{{ kernel_release.stdout }}/kernel/drivers/net/wireless/88x2bu.ko'
   register: edimax_installed_driver
   become: yes
+  when: not kernel_release.skipped
 
 # https://docs.ansible.com/ansible/latest/modules/make_module.html
 - name: Run 'install' target as root
   make:
     chdir: '/home/{{ ansible_user }}/rtl8822bu'
     target: install
-  when: edimax_installed_driver is defined and not edimax_installed_driver.stat.exists
+  when: edimax_installed_driver is defined and not edimax_installed_driver.skipped and not edimax_installed_driver.stat.exists
   notify: Reboot
   become: yes

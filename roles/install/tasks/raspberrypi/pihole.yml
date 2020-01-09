@@ -98,26 +98,26 @@
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
 
-# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
-- name: Pihole exporter docker container
-  docker_container:
-    image: ekofr/pihole-exporter:latest
-    name: pihole-exporter
-    hostname: pihole-exporter
-    networks_cli_compatible: yes
-    purge_networks: yes
-    networks:
-      - name: '{{ docker_network }}'
-    env:
-      PIHOLE_HOSTNAME: pihole
-      DNS1: 172.1.0.63#5053
-      PIHOLE_PASSWORD: "{{ lookup('env', 'PIHOLE_PASSWORD') }}"
-      INTERVAL: '10s'
-      PORT: '9617'
-    restart_policy: unless-stopped
-    labels:
-      traefik.enable: 'true'
-      traefik.frontend.rule: 'Host:pihole-exporter.pi.home'
-      traefik.port: '9617'
-  vars:
-    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+# # https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+# - name: Pihole exporter docker container
+#   docker_container:
+#     image: ekofr/pihole-exporter:latest
+#     name: pihole-exporter
+#     hostname: pihole-exporter
+#     networks_cli_compatible: yes
+#     purge_networks: yes
+#     networks:
+#       - name: '{{ docker_network }}'
+#     env:
+#       PIHOLE_HOSTNAME: pihole
+#       DNS1: 172.1.0.63#5053
+#       PIHOLE_PASSWORD: "{{ lookup('env', 'PIHOLE_PASSWORD') }}"
+#       INTERVAL: '10s'
+#       PORT: '9617'
+#     restart_policy: unless-stopped
+#     labels:
+#       traefik.enable: 'true'
+#       traefik.frontend.rule: 'Host:pihole-exporter.pi.home'
+#       traefik.port: '9617'
+#   vars:
+#     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
