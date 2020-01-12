@@ -42,7 +42,7 @@
 
 # https://docs.ansible.com/ansible/latest/modules/docker_network_module.html
 # http://www.subnet-calculator.com/subnet.php?net_class=B
-- name: Define docker pihole network
+- name: Define docker lucio network
   docker_network:
     name: lucio
   vars:
@@ -68,5 +68,12 @@
 # traefik tasks file for shokohscrole
 - name: Traefik tasks
   import_tasks: ../traefik.yml
+  vars:
+    docker_network: lucio
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# developer tasks file for shokohscrole
+- name: Developer dependency tasks
+  import_tasks: developer.yml
   vars:
     docker_network: lucio

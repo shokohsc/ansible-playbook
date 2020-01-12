@@ -25,3 +25,5 @@ lucio_addr: 73
 
 dhcp_start_addr: 100
 dhcp_end_addr: 254
+
+elk_version: '7.4.2'
