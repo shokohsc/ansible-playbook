@@ -5,6 +5,7 @@
 - name: Monitor docker container
   docker_container:
     image: michaelmiklis/rpi-monitor:latest
+    pull: true
     name: monitor
     hostname: monitor
     networks_cli_compatible: yes

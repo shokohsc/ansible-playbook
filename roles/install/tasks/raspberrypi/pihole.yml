@@ -66,6 +66,7 @@
 - name: Pihole docker container
   docker_container:
     image: pihole/pihole:latest
+    pull: true
     name: pihole
     hostname: pihole
     networks_cli_compatible: yes

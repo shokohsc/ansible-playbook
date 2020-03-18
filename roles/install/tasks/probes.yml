@@ -9,6 +9,7 @@
 - name: CAdvisor docker container
   docker_container:
     image: '{{ cadvisor_image }}'
+    pull: true
     name: cadvisor
     hostname: cadvisor
     networks_cli_compatible: yes
@@ -33,6 +34,7 @@
 - name: NodeExporter docker container
   docker_container:
     image: quay.io/prometheus/node-exporter
+    pull: true
     name: nodeexporter
     volumes:
       - /:/host:ro,rslave
@@ -43,5 +45,32 @@
       - '--path.rootfs=/host'
     capabilities:
       - sys_time
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+
+# https://docs.ansible.com/ansible/latest/modules/copy_module.html
+- name: Copy filebeat configuration file
+  copy:
+    src: filebeat/
+    dest: '/home/{{ ansible_user }}/filebeat/'
+
+# https://docs.ansible.com/ansible/latest/modules/docker_container_module.html
+- name: Filebeat docker container
+  docker_container:
+    image: '{{ filebeat_image }}'
+    pull: true
+    name: filebeat
+    restart_policy: unless-stopped
+    hostname: "filebeat-{{ ansible_facts['nodename'] }}"
+    networks_cli_compatible: yes
+    user: root
+    purge_networks: yes
+    networks:
+      - name: '{{ docker_network }}'
+    command: '/usr/share/filebeat/filebeat -e -strict.perms=false'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker:/var/lib/docker:ro
+      - /home/{{ ansible_user }}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"

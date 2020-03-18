@@ -17,6 +17,7 @@
 - name: Unbound docker container
   docker_container:
     image: mvance/unbound:latest
+    pull: true
     name: unbound
     hostname: unbound
     networks_cli_compatible: yes

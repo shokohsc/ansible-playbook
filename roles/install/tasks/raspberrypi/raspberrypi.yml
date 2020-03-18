@@ -87,6 +87,7 @@
   vars:
     docker_network: pihole
     cadvisor_image: zcube/cadvisor:latest
+    filebeat_image: 'shokohsc/filebeat:{{ elk_version }}-armv7'
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # traefik tasks file for shokohscrole

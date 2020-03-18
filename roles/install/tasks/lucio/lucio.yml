@@ -63,6 +63,7 @@
   vars:
     docker_network: lucio
     cadvisor_image: gcr.io/google-containers/cadvisor
+    filebeat_image: 'docker.elastic.co/beats/filebeat:{{ elk_version }}'
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # traefik tasks file for shokohscrole

@@ -32,6 +32,7 @@
 - name: Install parsec-linux.deb package from the parsecgaming.com
   apt:
     deb: https://builds.parsecgaming.com/package/parsec-linux.deb
+  become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
 # https://support.parsecgaming.com/hc/en-us/articles/115003035491-Finding-Your-Peer-ID
@@ -61,3 +62,11 @@
     - { line: 'decoder_software=0', regex: '^decoder_software='}
     - { line: 'client_audio_buffer=100000', regex: '^client_audio_buffer='}
     - { line: 'server_admin_mute=0', regex: '^server_admin_mute='}
+
+
+# https://docs.ansible.com/ansible/latest/modules/command_module.html
+# https://stackoverflow.com/questions/43015536/xhost-command-for-docker-gui-apps-eclipse
+- name: Allow X server access to docker
+  command: /usr/bin/xhost local:root
+  environment:
+    DISPLAY: "unix:0"

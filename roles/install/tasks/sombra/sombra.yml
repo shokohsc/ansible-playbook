@@ -59,3 +59,32 @@
     name: vm.max_map_count
     value: '262144'
   become: yes
+
+
+# https://docs.ansible.com/ansible/latest/modules/sysctl_module.html
+# https://unix.stackexchange.com/questions/520625/transmission-daemon-udp-failed-to-set-receive-send-buffer
+# Transmission container requirement
+- name: 16 MiB for the receive buffer
+  sysctl:
+      name: net.core.rmem_max
+      value: '16777216'
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/sysctl_module.html
+# https://unix.stackexchange.com/questions/520625/transmission-daemon-udp-failed-to-set-receive-send-buffer
+# Transmission container requirement
+- name: 4 MiB for send buffer
+  sysctl:
+      name: net.core.wmem_max
+      value: '4194304'
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/file_module.html
+# Readable docker volume files
+- name: Recursively change permissions of a directory
+  file:
+    path: /var/lib/docker
+    state: directory
+    # recurse: yes
+    mode: '0755'
+  become: yes

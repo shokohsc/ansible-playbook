@@ -51,12 +51,13 @@
     path: '/lib/modules/{{ kernel_release.stdout }}/kernel/drivers/net/wireless/88x2bu.ko'
   register: edimax_installed_driver
   become: yes
+  when: kernel_release is defined and kernel_release.changed
 
 # https://docs.ansible.com/ansible/latest/modules/make_module.html
 - name: Run 'install' target as root
   make:
     chdir: '/home/{{ ansible_user }}/rtl8822bu'
     target: install
-  when: edimax_installed_driver is defined and not edimax_installed_driver.stat.exists
+  when: edimax_installed_driver is defined and edimax_installed_driver.changed
   notify: Reboot
   become: yes
