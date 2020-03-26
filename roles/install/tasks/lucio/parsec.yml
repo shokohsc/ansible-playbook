@@ -51,6 +51,7 @@
     line: '{{ item.line }}'
     regexp: '{{ item.regex }}'
   with_items:
+    - { line: 'app_daemon=0', regex: '^app_daemon='}
     - { line: 'encoder_bitrate=50', regex: '^encoder_bitrate='}
     - { line: 'network_try_lan=1', regex: '^network_try_lan='}
     - { line: 'client_vsync=1', regex: '^client_vsync='}
