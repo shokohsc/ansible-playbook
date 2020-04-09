@@ -19,7 +19,7 @@
       - '49312:49312/tcp'
     env:
       TZ: Europe/Paris
-      TUNNEL_DNS_UPSTREAM: https://1.1.1.1/dns-query,https://1.0.0.1/dns-query
+      TUNNEL_DNS_UPSTREAM: https://dns.google/dns-query,https://1.1.1.1/dns-query
     restart_policy: unless-stopped
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
