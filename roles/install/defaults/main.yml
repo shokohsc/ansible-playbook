@@ -15,7 +15,7 @@ dockerd_tls_key_path_dict:
   lucio: '/home/lucio/traefik/certs/lucio.home-key.pem'
   sombra: '/home/sombra/seedbox/config/traefik/certs/shokohsc.home-key.pem'
 
-home_subnet: 10.164.18.0/24
+home_subnet: 192.168.1.0/24
 
 gateway_addr: 1
 chromecast_addr: 43

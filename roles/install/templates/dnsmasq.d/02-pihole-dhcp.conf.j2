@@ -1,0 +1,11 @@
+###############################################################################
+#  DHCP SERVER CONFIG FILE AUTOMATICALLY POPULATED BY PI-HOLE WEB INTERFACE.  #
+#            ANY CHANGES MADE TO THIS FILE WILL BE LOST ON CHANGE             #
+###############################################################################
+dhcp-authoritative
+dhcp-range={{ home_subnet | ipmath(dhcp_start_addr) }},{{ home_subnet | ipmath(dhcp_end_addr) }},24h
+dhcp-option=option:router,{{ home_subnet | ipmath(gateway_addr) }}
+dhcp-leasefile=/etc/pihole/dhcp.leases
+#quiet-dhcp
+
+domain=lan
