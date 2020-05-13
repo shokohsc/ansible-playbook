@@ -39,7 +39,7 @@
 - name: Add parsec alias
   lineinfile:
     path: '/home/{{ ansible_user }}/.bashrc'
-    line: "alias parsec='DISPLAY=:0 parsecd peer_id={{ lookup('env', 'PARSEC_PEER_ID') }}'"
+    line: "alias parsec='DISPLAY=:0 parsecd app_daemon=0:peer_id={{ lookup('env', 'PARSEC_PEER_ID') }}:encoder_bitrate=50:network_try_lan=1:client_vsync=1:client_fullscreen=0:client_windowed=0:client_window_x=1920:client_window_y=1080:client_overlay=0:decoder_software=0:client_audio_buffer=100000:server_admin_mute=0'"
 
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html
