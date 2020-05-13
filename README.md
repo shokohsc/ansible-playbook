@@ -10,6 +10,8 @@
     -w=/app \
     -e DOCKER_USERNAME=docker.io_registry_username \
     -e DOCKER_PASSWORD=docker.io_registry_password \
+    -e WIFI_SSID=some_ssid \
+    -e WIFI_PASSWORD=some_password \
     -e CANONICAL_KEY=canonical_livepatch_key \
     -e PARSEC_PEER_ID=parsec_peer_id \
     -e PIHOLE_PASSWORD=some_password \

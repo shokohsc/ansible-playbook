@@ -27,22 +27,9 @@
 # Clone rtl8822bu repo
 - name: Clone edimax build repo
   git:
-    repo: https://github.com/bamartin125/rtl8822bu.git
+    repo: https:////github.com/EntropicEffect/rtl8822bu.git
     dest: '/home/{{ ansible_user }}/rtl8822bu'
   when: edimax_repo_folder is defined and not edimax_repo_folder.stat.exists
-
-# https://docs.ansible.com/ansible/latest/modules/stat_module.html
-# Determine if edimax driver has been built
-- name: Stat edimax built driver file
-  stat:
-    path: '/home/{{ ansible_user }}/rtl8822bu/88x2bu.ko'
-  register: edimax_built_driver
-
-# https://docs.ansible.com/ansible/latest/modules/make_module.html
-- name: Build the default target
-  make:
-    chdir: '/home/{{ ansible_user }}/rtl8822bu'
-  when: edimax_built_driver is defined and not edimax_built_driver.stat.exists
 
 # https://docs.ansible.com/ansible/latest/modules/stat_module.html
 # Determine if edimax driver has been installed
@@ -54,10 +41,23 @@
   when: kernel_release is defined and kernel_release.changed
 
 # https://docs.ansible.com/ansible/latest/modules/make_module.html
-- name: Run 'install' target as root
+- name: Clean the default target
+  make:
+    chdir: '/home/{{ ansible_user }}/rtl8822bu'
+    target: clean
+  when: edimax_installed_driver is defined and not edimax_installed_driver.stat.exists
+
+# https://docs.ansible.com/ansible/latest/modules/make_module.html
+- name: Build the default target
+  make:
+    chdir: '/home/{{ ansible_user }}/rtl8822bu'
+  when: edimax_installed_driver is defined and not edimax_installed_driver.stat.exists
+
+# https://docs.ansible.com/ansible/latest/modules/make_module.html
+- name: Run 'make install' target as root
   make:
     chdir: '/home/{{ ansible_user }}/rtl8822bu'
     target: install
-  when: edimax_installed_driver is defined and edimax_installed_driver.changed
+  when: edimax_installed_driver is defined and not edimax_installed_driver.stat.exists
   notify: Reboot
   become: yes

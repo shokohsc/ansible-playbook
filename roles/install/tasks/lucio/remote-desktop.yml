@@ -1,0 +1,22 @@
+# https://docs.ansible.com/ansible/latest/modules/dconf_module.html
+# https://vastiny.com/post/tech/ubuntu-screen-sharing
+# https://askubuntu.com/questions/12206/how-do-i-start-the-vnc-server
+- name: remote encryption
+  dconf:
+    key: "/org/gnome/desktop/remote-access/require-encryption"
+    value: "false"
+
+- name: authentication methods
+  dconf:
+    key: "/org/gnome/desktop/remote-access/authentication-methods"
+    value: "['vnc']"
+
+- name: prompt enabled
+  dconf:
+    key: "/org/gnome/desktop/remote-access/prompt-enabled"
+    value: "false"
+
+- name: vino enable remote access.
+  dconf:
+    key: '/org/gnome/desktop/remote-access/enabled'
+    value: "true"

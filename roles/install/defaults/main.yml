@@ -27,3 +27,8 @@ dhcp_start_addr: 100
 dhcp_end_addr: 254
 
 elk_version: '7.4.2'
+
+wifi_default_ssid: "{{ lookup('env', 'WIFI_SSID') }}"
+wifi_default_country: 'FR'
+wifi_default_disable_dhcpcd_workaround: false
+wifi_default_disable_dhcpcd_workaround_interface: 'wlx74da38cc85a6'
