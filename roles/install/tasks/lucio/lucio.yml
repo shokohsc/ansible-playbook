@@ -37,10 +37,10 @@
 - name: Parsec tasks
   import_tasks: parsec.yml
 
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# edimax usb wifi tasks file for shokohscrole
-- name: Edimax tasks
-  import_tasks: edimax.yml
+# # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# # edimax usb wifi tasks file for shokohscrole
+# - name: Edimax tasks
+#   import_tasks: edimax.yml
 
 # https://docs.ansible.com/ansible/latest/modules/docker_network_module.html
 # http://www.subnet-calculator.com/subnet.php?net_class=B
