@@ -63,9 +63,9 @@
     docker__users:
       - '{{ ansible_user }}'
     docker__registries:
-      - registry_url: 'https://index.docker.io/v1/'
-        username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+      - username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
         password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+        reauthorize: true
     docker__daemon_flags:
       - "-H unix://"
       - "-H tcp://{{ ansible_default_ipv4.address }}:2376"

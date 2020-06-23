@@ -83,7 +83,7 @@
 
 # https://docs.ansible.com/ansible/latest/modules/import_role_module.html
 - name: Import wifi role
-  import_role:
+  include_role:
     name: layereight.wifi
   vars:
     wifi_ssid: "{{ wifi_default_ssid }}"
