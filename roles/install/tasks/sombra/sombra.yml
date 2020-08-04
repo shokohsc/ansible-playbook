@@ -21,8 +21,8 @@
     opts: '{{ item.opts }}'
     state: mounted
   with_items:
-      - { path: '/mnt/WD1To', src: '/dev/sda2', fstype: 'ntfs', opts: 'auto,uid=1000,gid=1000,umask=0000' }
-      - { path: '/mnt/WD2To', src: '/dev/sdb1', fstype: 'exfat', opts: 'auto,uid=1000,gid=1000,umask=0000' }
+      - { path: '/mnt/WD1To', src: '/dev/sda2', fstype: 'ntfs', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions' }
+      - { path: '/mnt/WD2To', src: '/dev/sdb1', fstype: 'exfat', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions' }
   become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/openssh_keypair_module.html
