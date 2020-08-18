@@ -1,0 +1,54 @@
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+- name: Define static ip address
+  lineinfile:
+    path: '/etc/network/interfaces'
+    line: '{{ item.line }}'
+    regexp: '{{ item.regex }}'
+  with_items:
+    - { line: 'iface eno1 inet static', regex: '^iface\ eno1(.*)$' }
+    - { line: "    address {{ home_subnet | ipmath(sombra_addr) }}/24", regex: "^\ \ \ \ address\ (.*)$" }
+    - { line: "    gateway {{ home_subnet | ipmath(gateway_addr) }}", regex: "^\ \ \ \ gateway\ (.*)$" }
+    - { line: "dns-nameservers 127.0.0.1", regex: "^dns-nameservers\ (.*)$" }
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/copy_module.html
+- name: Copy dhcp relay dockerfile
+  copy:
+    src: dhcp-relay/
+    dest: /tmp/dhcp-relay/
+    mode: '0755'
+
+# https://docs.ansible.com/ansible/latest/modules/docker_image_module.html
+- name: Build dhcp relay image
+  docker_image:
+    name: dhcp-relay:latest
+    build:
+      path: /tmp/dhcp-relay
+      pull: no
+    source: build
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+
+# https://docs.ansible.com/ansible/latest/modules/docker_network_module.html
+# http://www.subnet-calculator.com/subnet.php?net_class=B
+- name: Define docker pihole network
+  docker_network:
+    name: pihole
+    ipam_config:
+      - subnet: 172.2.0.0/25 # 172.2.0.1 - 172.2.0.126
+        gateway: 172.2.0.126
+        iprange: 172.2.0.0/26 # 172.2.0.1 - 172.2.0.62
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# cloudflared tasks file for shokohscrole
+- name: Cloudflared tasks
+  import_tasks: ../raspberrypi/cloudflared.yml
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# pihole tasks file for shokohscrole
+- name: Pihole tasks
+  import_tasks: ../raspberrypi/pihole.yml
+  vars:
+    docker_network: pihole

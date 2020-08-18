@@ -14,7 +14,7 @@
     purge_networks: yes
     networks:
       - name: pihole
-        ipv4_address: 172.1.0.63
+        ipv4_address: 172.2.0.63
     ports:
       - '49312:49312/tcp'
     etc_hosts:

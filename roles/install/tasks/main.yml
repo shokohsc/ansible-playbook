@@ -62,10 +62,10 @@
       {{ ansible_distribution_release }} {{ docker__channel | join (' ') }}
     docker__users:
       - '{{ ansible_user }}'
-    docker__registries:
-      - username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
-        password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
-        reauthorize: true
+    # docker__registries:
+    #   - username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+    #     password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
+    #     reauthorize: true
     docker__daemon_flags:
       - "-H unix://"
       - "-H tcp://{{ ansible_default_ipv4.address }}:2376"

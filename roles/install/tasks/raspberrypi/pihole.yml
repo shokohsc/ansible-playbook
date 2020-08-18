@@ -18,12 +18,28 @@
     name: dhcp-relay
     hostname: dhcp-relay
     network_mode: host
-    command: -s 172.1.0.73
+    command: -s 172.2.0.73
     capabilities:
       - net_admin
     restart_policy: unless-stopped
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
+
+# https://docs.ansible.com/ansible/latest/modules/file_module.html
+- name: Create a directory if it does not exist
+  file:
+    path: "/home/{{ ansible_user }}/pihole/dnsmasq.d"
+    state: directory
+    mode: '0755'
+  become: yes
+
+# https://docs.ansible.com/ansible/latest/modules/file_module.html
+- name: Create a directory if it does not exist
+  file:
+    path: "/home/{{ ansible_user }}/pihole/pihole"
+    state: directory
+    mode: '0755'
+  become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/template_module.html
 # https://www.mydailytutorials.com/ansible-template-module-examples/
@@ -82,10 +98,10 @@
     purge_networks: yes
     networks:
       - name: '{{ docker_network }}'
-        ipv4_address: 172.1.0.73
+        ipv4_address: 172.2.0.73
     env:
       TZ: Europe/Paris
-      DNS1: 172.1.0.63#5053
+      DNS1: 172.2.0.63#5053
       WEBPASSWORD: "{{ lookup('env', 'PIHOLE_PASSWORD') }}"
       VIRTUAL_HOST: pihole.shokohsc.home
       DNSMASQ_LISTENING: all
@@ -103,7 +119,8 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.frontend.rule: 'Host:pihole.pi.home;AddPrefix:/admin'
+      traefik.frontend.rule: "Host:pihole.shokohsc.home;AddPrefix:/admin"
+      traefik.docker.network: "pihole"
       traefik.port: '80'
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
@@ -120,7 +137,7 @@
 #       - name: '{{ docker_network }}'
 #     env:
 #       PIHOLE_HOSTNAME: pihole
-#       DNS1: 172.1.0.63#5053
+#       DNS1: 172.2.0.63#5053
 #       PIHOLE_PASSWORD: "{{ lookup('env', 'PIHOLE_PASSWORD') }}"
 #       INTERVAL: '10s'
 #       PORT: '9617'

@@ -1,4 +1,4 @@
-dhcp-option=option:dns-server,{{ home_subnet | ipmath(pi_addr) }}
+dhcp-option=option:dns-server,{{ home_subnet | ipmath(sombra_addr) }}
 
 address=/routeur/{{ home_subnet | ipmath(gateway_addr) }}
 

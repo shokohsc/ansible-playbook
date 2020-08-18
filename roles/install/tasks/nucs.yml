@@ -7,6 +7,12 @@
   when: ansible_facts['nodename']|lower == 'sombra'
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# pihole specific tasks file for shokohscrole
+- name: Pihole tasks
+  import_tasks: sombra/pihole.yml
+  when: ansible_facts['nodename']|lower == 'sombra'
+
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # lucio specific tasks file for shokohscrole
 - name: Lucio tasks
   import_tasks: lucio/lucio.yml
