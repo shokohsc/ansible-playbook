@@ -97,3 +97,17 @@
 # https://askubuntu.com/questions/12206/how-do-i-start-the-vnc-server
 - name: Vino server
   import_tasks: remote-desktop.yml
+
+# https://docs.ansible.com/ansible/latest/modules/import_role_module.html
+# https://www.digitalocean.com/community/tutorials/how-to-manage-logfiles-with-logrotate-on-ubuntu-16-04
+# https://github.com/arillso/ansible.logrotate
+- name: Import wifi role
+  include_role:
+    name: arillso.logrotate
+  vars:
+    logrotate_options:
+      - daily
+      - rotate 2
+      - create
+      - dateext
+      - su root syslog
