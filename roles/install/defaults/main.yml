@@ -26,7 +26,7 @@ lucio_addr: 73
 dhcp_start_addr: 100
 dhcp_end_addr: 254
 
-elk_version: '7.4.2'
+elk_version: '7.6.1'
 
 wifi_default_ssid: "{{ lookup('env', 'WIFI_SSID') }}"
 wifi_default_country: 'FR'

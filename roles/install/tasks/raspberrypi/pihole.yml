@@ -38,7 +38,7 @@
   file:
     path: "/home/{{ ansible_user }}/pihole/pihole"
     state: directory
-    mode: '0755'
+    mode: '0775'
   become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/template_module.html

@@ -79,13 +79,3 @@
       name: net.core.wmem_max
       value: '4194304'
   become: yes
-
-# https://docs.ansible.com/ansible/latest/modules/file_module.html
-# Readable docker volume files
-- name: Recursively change permissions of a directory
-  file:
-    path: /var/lib/docker
-    state: directory
-    # recurse: yes
-    mode: '0755'
-  become: yes
