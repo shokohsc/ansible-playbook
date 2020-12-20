@@ -79,6 +79,7 @@
       "metrics-addr" : "0.0.0.0:42375",
       "debug": true,
       "experimental" : true,
+      "ipv6": false,
       "tls": true,
       "tlscert": "{{ dockerd_tls_cert_path }}",
       "tlskey": "{{ dockerd_tls_key_path }}"
