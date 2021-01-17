@@ -118,6 +118,7 @@
       - "/home/{{ ansible_user }}/pihole/dnsmasq.d/:/etc/dnsmasq.d/"
     restart_policy: unless-stopped
     labels:
+      autoheal: 'true'
       traefik.enable: 'true'
       traefik.frontend.rule: "Host:pihole.shokohsc.home;AddPrefix:/admin"
       traefik.docker.network: "pihole"
