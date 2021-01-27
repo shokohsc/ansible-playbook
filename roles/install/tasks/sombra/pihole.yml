@@ -1,15 +1,15 @@
-# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
-- name: Define static ip address
-  lineinfile:
-    path: '/etc/network/interfaces'
-    line: '{{ item.line }}'
-    regexp: '{{ item.regex }}'
-  with_items:
-    - { line: 'iface eno1 inet static', regex: '^iface\ eno1(.*)$' }
-    - { line: "    address {{ home_subnet | ipmath(sombra_addr) }}/24", regex: "^\ \ \ \ address\ (.*)$" }
-    - { line: "    gateway {{ home_subnet | ipmath(gateway_addr) }}", regex: "^\ \ \ \ gateway\ (.*)$" }
-    - { line: "dns-nameservers 127.0.0.1", regex: "^dns-nameservers\ (.*)$" }
-  become: yes
+# # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+# - name: Define static ip address
+#   lineinfile:
+#     path: '/etc/network/interfaces'
+#     line: '{{ item.line }}'
+#     regexp: '{{ item.regex }}'
+#   with_items:
+#     - { line: 'iface eno1 inet static', regex: '^iface\ eno1(.*)$' }
+#     - { line: "    address {{ home_subnet | ipmath(sombra_addr) }}/24", regex: "^\ \ \ \ address\ (.*)$" }
+#     - { line: "    gateway {{ home_subnet | ipmath(gateway_addr) }}", regex: "^\ \ \ \ gateway\ (.*)$" }
+#     - { line: "dns-nameservers 127.0.0.1", regex: "^dns-nameservers\ (.*)$" }
+#   become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/copy_module.html
 - name: Copy dhcp relay dockerfile

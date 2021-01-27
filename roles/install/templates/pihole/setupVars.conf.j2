@@ -1,5 +1,5 @@
 BLOCKING_ENABLED=true
-DHCP_ACTIVE=true
+DHCP_ACTIVE=false
 DHCP_START={{ home_subnet | ipmath(dhcp_start_addr) }}
 DHCP_END={{ home_subnet | ipmath(dhcp_end_addr) }}
 DHCP_ROUTER={{ home_subnet | ipmath(gateway_addr) }}
