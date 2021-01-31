@@ -41,23 +41,23 @@
     mode: '0775'
   become: yes
 
-# https://docs.ansible.com/ansible/latest/modules/template_module.html
-# https://www.mydailytutorials.com/ansible-template-module-examples/
-# https://jinja.palletsprojects.com/en/2.10.x/
-- name: Template pihole dhcp server config file
-  template:
-    src: dnsmasq.d/02-pihole-dhcp.conf.j2
-    dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/02-pihole-dhcp.conf"
-  become: yes
+# # https://docs.ansible.com/ansible/latest/modules/template_module.html
+# # https://www.mydailytutorials.com/ansible-template-module-examples/
+# # https://jinja.palletsprojects.com/en/2.10.x/
+# - name: Template pihole dhcp server config file
+#   template:
+#     src: dnsmasq.d/02-pihole-dhcp.conf.j2
+#     dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/02-pihole-dhcp.conf"
+#   become: yes
 
-# https://docs.ansible.com/ansible/latest/modules/template_module.html
-# https://www.mydailytutorials.com/ansible-template-module-examples/
-# https://jinja.palletsprojects.com/en/2.10.x/
-- name: Template dnsmasq static dhcp config file
-  template:
-    src: dnsmasq.d/04-pihole-static-dhcp.conf.j2
-    dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/04-pihole-static-dhcp.conf"
-  become: yes
+# # https://docs.ansible.com/ansible/latest/modules/template_module.html
+# # https://www.mydailytutorials.com/ansible-template-module-examples/
+# # https://jinja.palletsprojects.com/en/2.10.x/
+# - name: Template dnsmasq static dhcp config file
+#   template:
+#     src: dnsmasq.d/04-pihole-static-dhcp.conf.j2
+#     dest: "/home/{{ ansible_user }}/pihole/dnsmasq.d/04-pihole-static-dhcp.conf"
+#   become: yes
 
 # https://docs.ansible.com/ansible/latest/modules/template_module.html
 # https://www.mydailytutorials.com/ansible-template-module-examples/
