@@ -19,3 +19,22 @@ defaultEntryPoints = ["http", "https"]
 domain = "{{ ansible_facts['nodename'] }}.home"
 exposedByDefault = false
 insecureSkipVerify = true
+
+[file]
+  watch = true
+
+[backends]
+ [backends.kind]
+   [backends.kind.servers]
+     [backends.kind.servers.server0]
+     url = "http://172.42.0.64"
+     weight = 1
+
+[frontends]
+  [frontends.kind]
+  entryPoints = ["http", "https"]
+  backend = "kind"
+  passHostHeader = true
+  [frontends.kind.routes]
+    [frontends.kind.routes.route0]
+      rule = "HostRegexp:{subdomain:[a-z]+}.kind.lucio.home,kind.lucio.home"
