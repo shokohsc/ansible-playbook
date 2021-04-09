@@ -50,22 +50,22 @@
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
 
-# https://docs.ansible.com/ansible/latest/modules/sysctl_module.html
-# https://github.com/prometheus/node_exporter#disabled-by-default
-- name: System performance access
-  sysctl:
-    name: kernel.perf_event_paranoid
-    value: '0'
-  become: yes
+# # https://docs.ansible.com/ansible/latest/modules/sysctl_module.html
+# # https://github.com/prometheus/node_exporter#disabled-by-default
+# - name: System performance access
+#   sysctl:
+#     name: kernel.perf_event_paranoid
+#     value: '0'
+#   become: yes
 
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# probes tasks file for shokohscrole
-- name: Probes tasks
-  import_tasks: ../probes.yml
-  vars:
-    docker_network: lucio
-    cadvisor_image: gcr.io/google-containers/cadvisor
-    filebeat_image: 'docker.elastic.co/beats/filebeat:{{ elk_version }}'
+# # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# # probes tasks file for shokohscrole
+# - name: Probes tasks
+#   import_tasks: ../probes.yml
+#   vars:
+#     docker_network: lucio
+#     cadvisor_image: gcr.io/google-containers/cadvisor
+#     filebeat_image: 'docker.elastic.co/beats/filebeat:{{ elk_version }}'
 
 # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
 # traefik tasks file for shokohscrole
@@ -74,12 +74,12 @@
   vars:
     docker_network: lucio
 
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# developer tasks file for shokohscrole
-- name: Developer dependency tasks
-  import_tasks: developer.yml
-  vars:
-    docker_network: lucio
+# # https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# # developer tasks file for shokohscrole
+# - name: Developer dependency tasks
+#   import_tasks: developer.yml
+#   vars:
+#     docker_network: lucio
 
 # # https://docs.ansible.com/ansible/latest/modules/import_role_module.html
 # - name: Import wifi role
