@@ -12,9 +12,21 @@
         update_cache: yes
         upgrade: yes
       become: yes
+      tags:
+        - packages
+        - pre
 
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html
 # Selfhosted hosts roles
   roles:
+    - role: tsukune_ch.canonical_livepatch
+      vars:
+        canonical_livepatch_token: "{{ lookup('env', 'CANONICAL_KEY') }}"
+      become: yes
+      tags:
+        - canonical
+
     - role: install
       dir: '/app'
+      tags:
+        - main

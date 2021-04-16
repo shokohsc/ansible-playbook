@@ -2,18 +2,45 @@
 ---
 # https://docs.ansible.com/ansible/latest/modules/apt_module.html
 # apt --help
-- name: Install basic packages
+- name: Install packages that allow apt to be used over HTTPS
   apt:
-    pkg:
-    - git
-    - net-tools
-    - vim
-    - htop
-    - usbutils
-    - build-essential
-    - sudo
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - apt-transport-https
+    - ca-certificates
     - curl
+    - gnupg-agent
+    - software-properties-common
+    - vim
+    - exfat-utils
+    - nfs-common
   become: yes
+  tags:
+    - packages
+
+# https://kubernetes.io/blog/2019/03/15/kubernetes-setup-using-ansible-and-vagrant/
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+  become: yes
+  tags:
+    - swap
+    - fstab
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+  become: yes
+  tags:
+    - swap
 
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
 # ls --help (hidden files, list view, append indicator entries, Human readable sizes)
@@ -24,17 +51,52 @@
   with_items:
     - { path: '/home/{{ ansible_user }}/.bashrc', line: "alias ll='ls -AlFh'" }
     - { path: '/home/{{ ansible_user }}/.bashrc', line: 'export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' }
+  tags:
+    - user
 
-# https://docs.ansible.com/ansible/latest/modules/git_config_module.html
-# Set some settings in ~/.gitconfig
-- name: Set basic global git config
-  git_config:
+# Set ip forwarding on in /proc and in the sysctl file and reload if necessary
+- name: Set ipv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+  tags:
+    - sysctl
+
+# Set ip forwarding on in /proc and in the sysctl file and reload if necessary
+- name: Set ipv4 forwarding
+  sysctl:
     name: '{{ item.name }}'
-    scope: global
     value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
   with_items:
-    - { name: 'user.email', value: 'shokohsc@gmail.com' }
-    - { name: 'user.name', value: 'shokohsc' }
+    - { name: 'net.core.wmem_max', value: '1048576' } # default 212992
+    - { name: 'net.core.rmem_max', value: '4194304' } # default 212992
+  tags:
+    - sysctl
+
+# https://docs.ansible.com/ansible/latest/modules/mount_module.html
+# lsblk -f to show disks connected and filesystems used
+- name: Mount External disks
+  mount:
+    path: '{{ item.path }}'
+    src: '{{ item.src }}'
+    fstype: '{{ item.fstype }}'
+    opts: '{{ item.opts }}'
+    state: mounted
+  with_items:
+      - { path: '/mnt/ssd', src: '/dev/sda1', fstype: 'ext4', opts: 'defaults' }
+  become: yes
+  tags:
+    - disk
+    - storage
+    - fstab
 
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
 # https://blaszkowski.com/2018/09/02/ansible-add-user-to-sudo
@@ -46,53 +108,8 @@
     create: yes
     validate: '/usr/sbin/visudo -cf %s'
   become: yes
-
-# https://docs.ansible.com/ansible/latest/modules/include_role_module.html
-# https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file
-# https://github.com/nickjj/ansible-docker
-# https://github.com/nickjj/ansible-docker#configure-the-docker-daemon-options-flags
-- name: Install docker
-  include_role:
-    name: nickjj.docker
-  vars:
-    tags: ["docker"]
-    docker__apt_repository: >
-      deb [arch={{ device_arch }}]
-      https://download.docker.com/linux/{{ ansible_distribution | lower }}
-      {{ ansible_distribution_release }} {{ docker__channel | join (' ') }}
-    docker__users:
-      - '{{ ansible_user }}'
-    docker__registries:
-      - username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
-        password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
-        reauthorize: true
-    docker__daemon_flags:
-      - "-H unix://"
-      - "-H tcp://{{ ansible_default_ipv4.address }}:2376"
-    docker__daemon_json: |
-      "log-driver": "json-file",
-      "log-opts": {
-              "max-size": "50k",
-              "max-file":"2"
-      },
-      "live-restore": true,
-      "metrics-addr" : "0.0.0.0:42375",
-      "debug": true,
-      "experimental" : true,
-      "tls": true,
-      "tlscert": "{{ dockerd_tls_cert_path }}",
-      "tlskey": "{{ dockerd_tls_key_path }}"
-    ansible_become: yes
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-- name: Nucs i3 tasks
-  import_tasks: nucs.yml
-  when: ansible_facts['nodename']|lower != 'pi'
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-- name: Raspberry pi tasks
-  import_tasks: raspberrypi/raspberrypi.yml
-  when: ansible_facts['nodename']|lower == 'pi'
+  tags:
+    - user
 
 # https://docs.ansible.com/ansible/latest/modules/cron_module.html
 - name: Set cron job to update packages monthly
@@ -103,3 +120,42 @@
     day: '1'
     job: 'apt update && apt upgrade'
   become: yes
+  tags:
+    - packages
+    - cron
+
+# https://docs.ansible.com/ansible/latest/modules/mount_module.html
+# lsblk -f to show disks connected and filesystems used
+- name: Mount External disks
+  mount:
+    path: '{{ item.path }}'
+    src: '{{ item.src }}'
+    fstype: '{{ item.fstype }}'
+    opts: '{{ item.opts }}'
+    state: mounted
+  with_items:
+      - { path: '/mnt/WD1To', src: '/dev/sdc2', fstype: 'ntfs', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions' }
+  become: yes
+  when: ansible_facts['nodename']|lower == 'lucio'
+  tags:
+    - disk
+    - nfs
+    - fstab
+
+# https://docs.ansible.com/ansible/latest/modules/mount_module.html
+# lsblk -f to show disks connected and filesystems used
+- name: Mount External disks
+  mount:
+    path: '{{ item.path }}'
+    src: '{{ item.src }}'
+    fstype: '{{ item.fstype }}'
+    opts: '{{ item.opts }}'
+    state: mounted
+  with_items:
+      - { path: '/mnt/WD2To', src: '/dev/sdc1', fstype: 'exfat', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions' }
+  become: yes
+  when: ansible_facts['nodename']|lower == 'zarya'
+  tags:
+    - disk
+    - nfs
+    - fstab
