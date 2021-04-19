@@ -81,23 +81,6 @@
   tags:
     - sysctl
 
-# https://docs.ansible.com/ansible/latest/modules/mount_module.html
-# lsblk -f to show disks connected and filesystems used
-- name: Mount External disks
-  mount:
-    path: '{{ item.path }}'
-    src: '{{ item.src }}'
-    fstype: '{{ item.fstype }}'
-    opts: '{{ item.opts }}'
-    state: mounted
-  with_items:
-      - { path: '/mnt/ssd', src: '/dev/sda1', fstype: 'ext4', opts: 'defaults' }
-  become: yes
-  tags:
-    - disk
-    - storage
-    - fstab
-
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
 # https://blaszkowski.com/2018/09/02/ansible-add-user-to-sudo
 - name: Add user to sudoers
@@ -132,9 +115,28 @@
     src: '{{ item.src }}'
     fstype: '{{ item.fstype }}'
     opts: '{{ item.opts }}'
-    state: mounted
+    state: '{{ item.state }}'
   with_items:
-      - { path: '/mnt/WD1To', src: '/dev/sdc2', fstype: 'ntfs', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions' }
+      - { path: '/mnt/ssd', src: '/dev/disk/by-uuid/1984739c-9adf-4a2f-89df-bbe61dbf381a', fstype: 'ext4', opts: 'defaults', state: 'absent' }
+  become: yes
+  when: ansible_facts['nodename']|lower == 'sombra'
+  tags:
+    - disk
+    - nfs
+    - fstab
+
+# https://docs.ansible.com/ansible/latest/modules/mount_module.html
+# lsblk -f to show disks connected and filesystems used
+- name: Mount External disks
+  mount:
+    path: '{{ item.path }}'
+    src: '{{ item.src }}'
+    fstype: '{{ item.fstype }}'
+    opts: '{{ item.opts }}'
+    state: '{{ item.state }}'
+  with_items:
+      - { path: '/mnt/ssd', src: '/dev/disk/by-uuid/c8a8e31d-916d-4e7f-b9ea-e2b9c94e3d93', fstype: 'ext4', opts: 'defaults', state: 'absent' }
+      - { path: '/mnt/WD1To', src: '/dev/disk/by-uuid/6096AA2B96AA0220', fstype: 'ntfs', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions', state: 'mounted' }
   become: yes
   when: ansible_facts['nodename']|lower == 'lucio'
   tags:
@@ -150,9 +152,10 @@
     src: '{{ item.src }}'
     fstype: '{{ item.fstype }}'
     opts: '{{ item.opts }}'
-    state: mounted
+    state: '{{ item.state }}'
   with_items:
-      - { path: '/mnt/WD2To', src: '/dev/sdc1', fstype: 'exfat', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions' }
+      - { path: '/mnt/ssd', src: '/dev/disk/by-uuid/ddcc3270-3831-4af1-a266-0e57f2b8c4fd', fstype: 'ext4', opts: 'defaults', state: 'absent' }
+      - { path: '/mnt/WD2To', src: '/dev/disk/by-uuid/FC3D-B257', fstype: 'exfat', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions', state: 'mounted' }
   become: yes
   when: ansible_facts['nodename']|lower == 'zarya'
   tags:

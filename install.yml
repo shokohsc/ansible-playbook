@@ -26,6 +26,14 @@
       tags:
         - canonical
 
+    - role: geerlingguy.ntp
+      vars:
+        ntp_enabled: true
+        ntp_timezone: Europe/Paris
+      become: yes
+      tags:
+        - ntp
+
     - role: install
       dir: '/app'
       tags:
