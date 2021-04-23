@@ -66,8 +66,8 @@
   tags:
     - sysctl
 
-# Set ip forwarding on in /proc and in the sysctl file and reload if necessary
-- name: Set ipv4 forwarding
+# Set net core memory settings -> transmission
+- name: Set net core memory
   sysctl:
     name: '{{ item.name }}'
     value: '{{ item.value }}'
@@ -78,6 +78,20 @@
   with_items:
     - { name: 'net.core.wmem_max', value: '1048576' } # default 212992
     - { name: 'net.core.rmem_max', value: '4194304' } # default 212992
+  tags:
+    - sysctl
+
+# Set virtual memory -> elasticsearch
+- name: Set net core memory
+  sysctl:
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+  with_items:
+    - { name: 'vm.max_map_count', value: '262144' } # default 65530
   tags:
     - sysctl
 
