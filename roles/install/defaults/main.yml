@@ -1,34 +1,21 @@
 ---
 # defaults file for shokohscrole
-devices_arch_dict:
-  x86_64: 'amd64'
-  armv7l: 'armhf'
-  armv8l: 'arm64'
-
-dockerd_tls_cert_path_dict:
-  pi: '/home/pi/traefik/certs/pi.home.pem'
-  lucio: '/home/lucio/traefik/certs/lucio.home.pem'
-  sombra: '/home/sombra/seedbox/config/traefik/certs/shokohsc.home.pem'
-
-dockerd_tls_key_path_dict:
-  pi: '/home/pi/traefik/certs/pi.home-key.pem'
-  lucio: '/home/lucio/traefik/certs/lucio.home-key.pem'
-  sombra: '/home/sombra/seedbox/config/traefik/certs/shokohsc.home-key.pem'
-
-home_subnet: 192.168.1.0/24
+home_subnet: 10.0.42.0/24
 
 gateway_addr: 1
-chromecast_addr: 43
-pi_addr: 53
-sombra_addr: 63
-lucio_addr: 73
+vip_addr: 42
+sombra_addr: 60
+lucio_addr: 70
+zarya_addr: 80
+pi_addr: 90
 
-dhcp_start_addr: 100
-dhcp_end_addr: 254
-
-elk_version: '7.4.2'
-
-wifi_default_ssid: "{{ lookup('env', 'WIFI_SSID') }}"
-wifi_default_country: 'FR'
-wifi_default_disable_dhcpcd_workaround: false
-wifi_default_disable_dhcpcd_workaround_interface: 'wlp58s0'
+keepalived:
+  sombra:
+    state: MASTER
+    priority: 102
+  lucio:
+    state: BACKUP
+    priority: 101
+  zarya:
+    state: BACKUP
+    priority: 100

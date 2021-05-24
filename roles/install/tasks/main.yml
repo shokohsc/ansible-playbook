@@ -20,27 +20,8 @@
   become: yes
   tags:
     - packages
-
-# https://kubernetes.io/blog/2019/03/15/kubernetes-setup-using-ansible-and-vagrant/
-- name: Remove swapfile from /etc/fstab
-  mount:
-    name: "{{ item }}"
-    fstype: swap
-    state: absent
-  with_items:
-    - swap
-    - none
-  become: yes
-  tags:
-    - swap
-    - fstab
-
-- name: Disable swap
-  command: swapoff -a
-  when: ansible_swaptotal_mb > 0
-  become: yes
-  tags:
-    - swap
+    - nucs
+    - pi
 
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
 # ls --help (hidden files, list view, append indicator entries, Human readable sizes)
@@ -53,47 +34,8 @@
     - { path: '/home/{{ ansible_user }}/.bashrc', line: 'export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' }
   tags:
     - user
-
-# Set ip forwarding on in /proc and in the sysctl file and reload if necessary
-- name: Set ipv4 forwarding
-  sysctl:
-    name: net.ipv4.ip_forward
-    value: 1
-    sysctl_set: yes
-    state: present
-    reload: yes
-  become: yes
-  tags:
-    - sysctl
-
-# Set net core memory settings -> transmission
-- name: Set net core memory
-  sysctl:
-    name: '{{ item.name }}'
-    value: '{{ item.value }}'
-    sysctl_set: yes
-    state: present
-    reload: yes
-  become: yes
-  with_items:
-    - { name: 'net.core.wmem_max', value: '1048576' } # default 212992
-    - { name: 'net.core.rmem_max', value: '4194304' } # default 212992
-  tags:
-    - sysctl
-
-# Set virtual memory -> elasticsearch
-- name: Set net core memory
-  sysctl:
-    name: '{{ item.name }}'
-    value: '{{ item.value }}'
-    sysctl_set: yes
-    state: present
-    reload: yes
-  become: yes
-  with_items:
-    - { name: 'vm.max_map_count', value: '262144' } # default 65530
-  tags:
-    - sysctl
+    - nucs
+    - pi
 
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
 # https://blaszkowski.com/2018/09/02/ansible-add-user-to-sudo
@@ -107,6 +49,8 @@
   become: yes
   tags:
     - user
+    - nucs
+    - pi
 
 # https://docs.ansible.com/ansible/latest/modules/cron_module.html
 - name: Set cron job to update packages monthly
@@ -120,59 +64,17 @@
   tags:
     - packages
     - cron
+    - nucs
+    - pi
 
-# https://docs.ansible.com/ansible/latest/modules/mount_module.html
-# lsblk -f to show disks connected and filesystems used
-- name: Mount External disks
-  mount:
-    path: '{{ item.path }}'
-    src: '{{ item.src }}'
-    fstype: '{{ item.fstype }}'
-    opts: '{{ item.opts }}'
-    state: '{{ item.state }}'
-  with_items:
-      - { path: '/mnt/ssd', src: '/dev/disk/by-uuid/1984739c-9adf-4a2f-89df-bbe61dbf381a', fstype: 'ext4', opts: 'defaults', state: 'absent' }
-  become: yes
-  when: ansible_facts['nodename']|lower == 'sombra'
-  tags:
-    - disk
-    - nfs
-    - fstab
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# nucs specific tasks file for shokohscrole
+- name: Nucs tasks
+  import_tasks: nucs.yml
+  when: ansible_facts['nodename']|lower != 'pi'
 
-# https://docs.ansible.com/ansible/latest/modules/mount_module.html
-# lsblk -f to show disks connected and filesystems used
-- name: Mount External disks
-  mount:
-    path: '{{ item.path }}'
-    src: '{{ item.src }}'
-    fstype: '{{ item.fstype }}'
-    opts: '{{ item.opts }}'
-    state: '{{ item.state }}'
-  with_items:
-      - { path: '/mnt/ssd', src: '/dev/disk/by-uuid/c8a8e31d-916d-4e7f-b9ea-e2b9c94e3d93', fstype: 'ext4', opts: 'defaults', state: 'absent' }
-      - { path: '/mnt/WD1To', src: '/dev/disk/by-uuid/6096AA2B96AA0220', fstype: 'ntfs', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions', state: 'mounted' }
-  become: yes
-  when: ansible_facts['nodename']|lower == 'lucio'
-  tags:
-    - disk
-    - nfs
-    - fstab
-
-# https://docs.ansible.com/ansible/latest/modules/mount_module.html
-# lsblk -f to show disks connected and filesystems used
-- name: Mount External disks
-  mount:
-    path: '{{ item.path }}'
-    src: '{{ item.src }}'
-    fstype: '{{ item.fstype }}'
-    opts: '{{ item.opts }}'
-    state: '{{ item.state }}'
-  with_items:
-      - { path: '/mnt/ssd', src: '/dev/disk/by-uuid/ddcc3270-3831-4af1-a266-0e57f2b8c4fd', fstype: 'ext4', opts: 'defaults', state: 'absent' }
-      - { path: '/mnt/WD2To', src: '/dev/disk/by-uuid/FC3D-B257', fstype: 'exfat', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions', state: 'mounted' }
-  become: yes
-  when: ansible_facts['nodename']|lower == 'zarya'
-  tags:
-    - disk
-    - nfs
-    - fstab
+# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# pi specific tasks file for shokohscrole
+- name: Pi tasks
+  import_tasks: raspberrypi/raspberrypi.yml
+  when: ansible_facts['nodename']|lower == 'pi'

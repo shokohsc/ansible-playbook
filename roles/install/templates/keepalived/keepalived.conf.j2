@@ -1,0 +1,34 @@
+global_defs {
+   notification_email {
+     root@localhost
+   }
+   notification_email_from root@localhost
+   smtp_server localhost
+   smtp_connect_timeout 30
+}
+
+# Script used to check if HAProxy is running
+vrrp_script check_haproxy {
+    script "killall -0 haproxy" # check the haproxy process
+    interval 2 # every 2 seconds
+    weight 2 # add 2 points if OK
+}
+
+vrrp_instance VI_1 {
+    state {{ keepalived[ansible_facts['nodename']].state }}
+    interface eno1
+    virtual_router_id 255
+    priority {{ keepalived[ansible_facts['nodename']].priority }}
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass EhazK1Y2MBK37gZktTl1zrUUuBk
+    }
+    virtual_ipaddress {
+        {{ home_subnet | ipmath(vip_addr) }}
+    }
+
+    track_script {
+        check_haproxy
+    }
+}

@@ -1,104 +1,112 @@
-# pi tasks file for shokohscrole
+# parsec tasks file for shokohscrole
+# https://support.parsecgaming.com
 ---
-# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
-- name: Define pi hostname
-  lineinfile:
-    path: '/etc/hosts'
-    line: '127.0.0.1    pi'
-    regexp: '^127.0.0.1(.+)pi$'
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+# https://parsecgaming.com/downloads/
+- name: Install xbox driver
+  apt:
+    pkg:
+      - xboxdrv
+      - xz-utils
   become: yes
+  tags:
+    - parsec
+    - pi
+
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+# https://parsecgaming.com/downloads/
+- name: Install parsec-linux.deb package from the parsecgaming.com
+  apt:
+    deb: https://s3.amazonaws.com/parsec-build/package/parsec-rpi.deb
+  become: yes
+  tags:
+    - parsec
+    - pi
 
 # https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
-- name: Define static ip address
+# https://support.parsecgaming.com/hc/en-us/articles/115003035491-Finding-Your-Peer-ID
+- name: Add parsec alias
   lineinfile:
-    path: '/etc/dhcpcd.conf'
+    path: '/home/{{ ansible_user }}/.bashrc'
+    line: "alias parsec='DISPLAY=:0 parsecd app_daemon=0:peer_id={{ lookup('env', 'PARSEC_PEER_ID') }}:encoder_bitrate=50:network_try_lan=1:client_vsync=1:client_fullscreen=0:client_windowed=0:client_window_x=1920:client_window_y=1080:client_overlay=0:decoder_software=0:client_audio_buffer=100000:server_admin_mute=0'"
+  tags:
+    - parsec
+    - pi
+
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html
+# https://support.parsecgaming.com/hc/en-us/articles/360001562772-All-Advanced-Configuration-Options
+- name: Parsec client configuration
+  lineinfile:
+    create: yes
+    path: '/home/{{ ansible_user }}/.parsec/config.txt'
     line: '{{ item.line }}'
     regexp: '{{ item.regex }}'
   with_items:
-    - { line: 'interface eth0', regex: '^interface\ eth0$' }
-    - { line: "static ip_address={{ home_subnet | ipmath(pi_addr) }}/24", regex: "^static\ ip_address={{ home_subnet | ipmath(pi_addr) }}\/24$" }
-    - { line: "static routers={{ home_subnet | ipmath(gateway_addr) }}", regex: "^static\ routers={{ home_subnet | ipmath(gateway_addr) }}$" }
-    - { line: 'static domain_name_servers=127.0.0.1', regex: '^static\ domain_name_servers=127.0.0.1$' }
+    - { line: 'app_daemon=0', regex: '^app_daemon='}
+    - { line: 'encoder_bitrate=50', regex: '^encoder_bitrate='}
+    - { line: 'network_try_lan=1', regex: '^network_try_lan='}
+    - { line: 'client_vsync=1', regex: '^client_vsync='}
+    - { line: 'client_fullscreen=0', regex: '^client_fullscreen='}
+    - { line: 'client_windowed=0', regex: '^client_windowed='}
+    - { line: 'client_window_x=1920', regex: '^client_window_x='}
+    - { line: 'client_window_y=1080', regex: '^client_window_y='}
+    - { line: 'client_overlay=0', regex: '^client_overlay='}
+    - { line: 'decoder_software=0', regex: '^decoder_software='}
+    - { line: 'client_audio_buffer=100000', regex: '^client_audio_buffer='}
+    - { line: 'server_admin_mute=0', regex: '^server_admin_mute='}
+  tags:
+    - parsec
+    - pi
+
+# https://docs.ansible.com/ansible/latest/modules/command_module.html
+# https://stackoverflow.com/questions/43015536/xhost-command-for-docker-gui-apps-eclipse
+- name: Allow X server access to docker
+  command: /usr/bin/xhost local:root
+  environment:
+    DISPLAY: "unix:0"
+  tags:
+    - parsec
+    - pi
+
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# apt --help
+# https://www.raspberrypi.org/documentation/remote-access/samba.md
+- name: Install samba dependencies
+  apt:
+    pkg:
+    - samba
+    - samba-common-bin
+    - smbclient
+    - cifs-utils
   become: yes
+  tags:
+    - samba
+    - pi
 
-# https://docs.ansible.com/ansible/latest/modules/copy_module.html
-# https://ownyourbits.com/2019/02/02/whats-wrong-with-the-raspberry-pi/
-# https://github.com/bamarni/pi64/issues/4#issuecomment-292707581
-- name: Copy monitoring test shell script
-  copy:
-    src: monitoring.sh
-    dest: '/home/{{ ansible_user }}/monitoring.sh'
+# https://docs.ansible.com/ansible/2.9/modules/file_module.html
+- name: Create samba directory
+  file:
+    path: /home/{{ ansible_user }}/samba
+    state: directory
     mode: '0755'
+  tags:
+    - samba
+    - pi
 
-# https://docs.ansible.com/ansible/latest/modules/copy_module.html
-- name: Copy dhcp relay dockerfile
-  copy:
-    src: dhcp-relay/
-    dest: /tmp/dhcp-relay/
-    mode: '0755'
-
-# https://docs.ansible.com/ansible/latest/modules/docker_image_module.html
-- name: Build dhcp relay image
-  docker_image:
-    name: dhcp-relay:latest
-    build:
-      path: /tmp/dhcp-relay
-      pull: no
-    source: build
-  vars:
-    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
-
-# https://docs.ansible.com/ansible/latest/modules/docker_network_module.html
-# http://www.subnet-calculator.com/subnet.php?net_class=B
-- name: Define docker pihole network
-  docker_network:
-    name: pihole
-    ipam_config:
-      - subnet: 172.1.0.0/25 # 172.1.0.1 - 172.1.0.126
-        gateway: 172.1.0.126
-        iprange: 172.1.0.0/26 # 172.1.0.1 - 172.1.0.62
-  vars:
-    ansible_python_interpreter: "{{ '/usr/bin/env python-docker' }}"
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# monitor rpi tasks file for shokohscrole
-- name: Monitor tasks
-  import_tasks: monitor.yml
-  vars:
-    docker_network: pihole
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# cloudflared tasks file for shokohscrole
-- name: Cloudflared tasks
-  import_tasks: cloudflared.yml
-
-# https://docs.ansible.com/ansible/latest/modules/sysctl_module.html
-# https://github.com/prometheus/node_exporter#disabled-by-default
-- name: System performance access
-  sysctl:
-    name: kernel.perf_event_paranoid
-    value: '0'
-  become: yes
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# probes tasks file for shokohscrole
-- name: Probes tasks
-  import_tasks: ../probes.yml
-  vars:
-    docker_network: pihole
-    cadvisor_image: zcube/cadvisor:latest
-    filebeat_image: 'shokohsc/filebeat:{{ elk_version }}-armv7'
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# traefik tasks file for shokohscrole
-- name: Traefik tasks
-  import_tasks: ../traefik.yml
-  vars:
-    docker_network: pihole
-
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
-# pihole tasks file for shokohscrole
-- name: Pihole tasks
-  import_tasks: pihole.yml
-  vars:
-    docker_network: pihole
+# # https://docs.ansible.com/ansible/latest/modules/mount_module.html
+# # lsblk -f to show disks connected and filesystems used
+# - name: Mount External disks
+#   mount:
+#     path: '{{ item.path }}'
+#     src: '{{ item.src }}'
+#     fstype: '{{ item.fstype }}'
+#     state: '{{ item.state }}'
+#   with_items:
+#       - { path: '/home/{{ ansible_user }}/samba', src: '//shokohsc.home/shared', fstype: 'cifs', state: 'mounted' }
+#   become: yes
+#   tags:
+#     - samba
+#     - pi

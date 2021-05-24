@@ -15,6 +15,8 @@
       tags:
         - packages
         - pre
+        - nucs
+        - pi
 
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html
 # Selfhosted hosts roles
@@ -22,9 +24,11 @@
     - role: tsukune_ch.canonical_livepatch
       vars:
         canonical_livepatch_token: "{{ lookup('env', 'CANONICAL_KEY') }}"
+      when: ansible_facts['nodename']|lower != 'pi'
       become: yes
       tags:
         - canonical
+        - nucs
 
     - role: geerlingguy.ntp
       vars:
@@ -33,8 +37,12 @@
       become: yes
       tags:
         - ntp
+        - nucs
+        - pi
 
     - role: install
       dir: '/app'
       tags:
         - main
+        - nucs
+        - pi
