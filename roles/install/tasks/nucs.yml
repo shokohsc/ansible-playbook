@@ -63,6 +63,19 @@
     - sysctl
     - nucs
 
+# Set ip forwarding on in /proc and in the sysctl file and reload if necessary
+- name: Set ipv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+  tags:
+    - sysctl
+    - nucs
+
 # Set net core memory settings -> transmission
 - name: Set net core memory
   sysctl:
@@ -127,31 +140,6 @@
 # https://docs.ansible.com/ansible/latest/modules/template_module.html
 # https://www.mydailytutorials.com/ansible-template-module-examples/
 # https://jinja.palletsprojects.com/en/2.10.x/
-- name: Template haproxy config file
-  template:
-    src: haproxy/haproxy.cfg.j2
-    dest: "/etc/haproxy/haproxy.cfg"
-    mode: 0644
-  register: haproxy_config
-  become: yes
-  tags:
-    - haproxy
-    - nucs
-
-# https://docs.ansible.com/ansible/2.9/modules/service_module.html
-- name: HAproxy service
-  service:
-    name: haproxy
-    state: reloaded
-    enabled: yes
-  when: haproxy_config.changed
-  tags:
-    - haproxy
-    - nucs
-
-# https://docs.ansible.com/ansible/latest/modules/template_module.html
-# https://www.mydailytutorials.com/ansible-template-module-examples/
-# https://jinja.palletsprojects.com/en/2.10.x/
 - name: Template keepalived config file
   template:
     src: keepalived/keepalived.conf.j2
@@ -167,11 +155,36 @@
 - name: Keepalived service
   service:
     name: keepalived
-    state: reloaded
+    state: restarted
     enabled: yes
-  when: keepalived_config.changed
+  become: yes
   tags:
     - keepalived
+    - nucs
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+# https://www.mydailytutorials.com/ansible-template-module-examples/
+# https://jinja.palletsprojects.com/en/2.10.x/
+- name: Template haproxy config file
+  template:
+    src: haproxy/haproxy.cfg.j2
+    dest: "/etc/haproxy/haproxy.cfg"
+    mode: 0644
+  register: haproxy_config
+  become: yes
+  tags:
+    - haproxy
+    - nucs
+
+# https://docs.ansible.com/ansible/2.9/modules/service_module.html
+- name: HAproxy service
+  service:
+    name: haproxy
+    state: restarted
+    enabled: yes
+  become: yes
+  tags:
+    - haproxy
     - nucs
 
 # https://docs.ansible.com/ansible/latest/modules/template_module.html
