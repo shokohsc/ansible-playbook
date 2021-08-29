@@ -1,8 +1,8 @@
 ---
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_checkmode.html
+# https://docs.ansible.com/ansible/2.9/user_guide/playbooks_checkmode.html
 - hosts: all
   pre_tasks:
-# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# https://docs.ansible.com/ansible/2.9/modules/apt_module.html
 # Update packages on all hosts
 # apt --help
     - name: Update packages
@@ -18,7 +18,7 @@
         - nucs
         - pi
 
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html
+# https://docs.ansible.com/ansible/2.9/user_guide/playbooks_reuse_roles.html
 # Selfhosted hosts roles
   roles:
     - role: tsukune_ch.canonical_livepatch

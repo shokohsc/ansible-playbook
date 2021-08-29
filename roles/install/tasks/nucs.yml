@@ -1,6 +1,6 @@
 # common nucs tasks file for shokohscrole
 ---
-# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# https://docs.ansible.com/ansible/2.9/modules/apt_module.html
 # apt --help
 - name: Install packages that allow apt to be used over HTTPS
   apt:
@@ -118,6 +118,7 @@
   become: yes
   with_items:
     - { name: 'fs.inotify.max_user_watches', value: '524288' } # default 8192
+    - { name: 'fs.inotify.max_user_instances', value: '524288' } # default 8192
   tags:
     - sysctl
     - nucs
@@ -137,7 +138,7 @@
     - sysctl
     - nucs
 
-# https://docs.ansible.com/ansible/latest/modules/template_module.html
+# https://docs.ansible.com/ansible/2.9/modules/template_module.html
 # https://www.mydailytutorials.com/ansible-template-module-examples/
 # https://jinja.palletsprojects.com/en/2.10.x/
 - name: Template keepalived config file
@@ -162,7 +163,7 @@
     - keepalived
     - nucs
 
-# https://docs.ansible.com/ansible/latest/modules/template_module.html
+# https://docs.ansible.com/ansible/2.9/modules/template_module.html
 # https://www.mydailytutorials.com/ansible-template-module-examples/
 # https://jinja.palletsprojects.com/en/2.10.x/
 - name: Template haproxy config file
@@ -187,7 +188,7 @@
     - haproxy
     - nucs
 
-# https://docs.ansible.com/ansible/latest/modules/template_module.html
+# https://docs.ansible.com/ansible/2.9/modules/template_module.html
 # https://www.mydailytutorials.com/ansible-template-module-examples/
 # https://jinja.palletsprojects.com/en/2.10.x/
 - name: Template rook config file
@@ -202,19 +203,19 @@
     - rook
     - nucs
 
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# https://docs.ansible.com/ansible/2.9/modules/import_tasks_module.html
 # sombra specific tasks file for shokohscrole
 - name: Sombra tasks
   import_tasks: sombra/sombra.yml
   when: ansible_facts['nodename']|lower == 'sombra'
 
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# https://docs.ansible.com/ansible/2.9/modules/import_tasks_module.html
 # lucio specific tasks file for shokohscrole
 - name: Lucio tasks
   import_tasks: lucio/lucio.yml
   when: ansible_facts['nodename']|lower == 'lucio'
 
-# https://docs.ansible.com/ansible/latest/modules/import_tasks_module.html
+# https://docs.ansible.com/ansible/2.9/modules/import_tasks_module.html
 # zarya specific tasks file for shokohscrole
 - name: Zarya tasks
   import_tasks: zarya/zarya.yml

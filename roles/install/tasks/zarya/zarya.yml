@@ -1,4 +1,4 @@
-# https://docs.ansible.com/ansible/latest/modules/mount_module.html
+# https://docs.ansible.com/ansible/2.9/modules/mount_module.html
 # lsblk -f to show disks connected and filesystems used
 - name: Mount External disks
   mount:

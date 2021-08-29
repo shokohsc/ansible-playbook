@@ -1,7 +1,7 @@
 # handlers file for shokohscrole
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change
+# https://docs.ansible.com/ansible/2.9/user_guide/playbooks_intro.html#handlers-running-operations-on-change
 ---
-# https://docs.ansible.com/ansible/latest/modules/reboot_module.html
+# https://docs.ansible.com/ansible/2.9/modules/reboot_module.html
 # https://earlruby.org/2019/07/rebooting-a-host-with-ansible/
 - name: Reboot
   reboot:

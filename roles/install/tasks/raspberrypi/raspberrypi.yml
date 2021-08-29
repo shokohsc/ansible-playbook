@@ -1,7 +1,7 @@
 # parsec tasks file for shokohscrole
 # https://support.parsecgaming.com
 ---
-# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# https://docs.ansible.com/ansible/2.9/modules/apt_module.html
 # apt --help
 # https://parsecgaming.com/downloads/
 - name: Install xbox driver
@@ -14,7 +14,7 @@
     - parsec
     - pi
 
-# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# https://docs.ansible.com/ansible/2.9/modules/apt_module.html
 # apt --help
 # https://parsecgaming.com/downloads/
 - name: Install parsec-linux.deb package from the parsecgaming.com
@@ -25,7 +25,7 @@
     - parsec
     - pi
 
-# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+# https://docs.ansible.com/ansible/2.9/modules/lineinfile_module.html
 # https://support.parsecgaming.com/hc/en-us/articles/115003035491-Finding-Your-Peer-ID
 - name: Add parsec alias
   lineinfile:
@@ -35,8 +35,8 @@
     - parsec
     - pi
 
-# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html
+# https://docs.ansible.com/ansible/2.9/modules/lineinfile_module.html
+# https://docs.ansible.com/ansible/2.9/user_guide/playbooks_loops.html
 # https://support.parsecgaming.com/hc/en-us/articles/360001562772-All-Advanced-Configuration-Options
 - name: Parsec client configuration
   lineinfile:
@@ -61,7 +61,7 @@
     - parsec
     - pi
 
-# https://docs.ansible.com/ansible/latest/modules/command_module.html
+# https://docs.ansible.com/ansible/2.9/modules/command_module.html
 # https://stackoverflow.com/questions/43015536/xhost-command-for-docker-gui-apps-eclipse
 - name: Allow X server access to docker
   command: /usr/bin/xhost local:root
@@ -71,7 +71,7 @@
     - parsec
     - pi
 
-# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+# https://docs.ansible.com/ansible/2.9/modules/apt_module.html
 # apt --help
 # https://www.raspberrypi.org/documentation/remote-access/samba.md
 - name: Install samba dependencies
@@ -96,17 +96,18 @@
     - samba
     - pi
 
-# # https://docs.ansible.com/ansible/latest/modules/mount_module.html
-# # lsblk -f to show disks connected and filesystems used
-# - name: Mount External disks
-#   mount:
-#     path: '{{ item.path }}'
-#     src: '{{ item.src }}'
-#     fstype: '{{ item.fstype }}'
-#     state: '{{ item.state }}'
-#   with_items:
-#       - { path: '/home/{{ ansible_user }}/samba', src: '//shokohsc.home/shared', fstype: 'cifs', state: 'mounted' }
-#   become: yes
-#   tags:
-#     - samba
-#     - pi
+# https://docs.ansible.com/ansible/2.9/modules/mount_module.html
+# lsblk -f to show disks connected and filesystems used
+- name: Mount External disks
+  mount:
+    path: '{{ item.path }}'
+    src: '{{ item.src }}'
+    fstype: '{{ item.fstype }}'
+    state: '{{ item.state }}'
+    opts: '{{ item.opts }}'
+  with_items:
+      - { path: '/home/{{ ansible_user }}/samba', src: '//shokohsc.home/shared', fstype: 'cifs', state: 'mounted', opts: 'username=guest,password=' }
+  become: yes
+  tags:
+    - samba
+    - pi
