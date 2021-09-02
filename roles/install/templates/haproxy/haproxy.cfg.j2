@@ -28,10 +28,9 @@ defaults
   option  dontlognull
   timeout http-request 10s
   timeout queue        1m
-  timeout connect      10s
-  timeout client       86400s
-  timeout server       86400s
-  timeout tunnel       86400s
+  timeout connect      5000
+  timeout client       240000
+  timeout server       240000
 	errorfile 400 /etc/haproxy/errors/400.http
 	errorfile 403 /etc/haproxy/errors/403.http
 	errorfile 408 /etc/haproxy/errors/408.http
@@ -51,6 +50,7 @@ frontend stats
 frontend kubernetes
     bind {{ home_subnet | ipmath(vip_addr) }}:8443
     option tcplog
+		option forwardfor
     mode tcp
     default_backend kubernetes-master-nodes
 
@@ -63,10 +63,13 @@ frontend etcd
 backend kubernetes-master-nodes
     mode tcp
     balance roundrobin
+		option tcplog
     option tcp-check
-    server sombra {{ home_subnet | ipmath(sombra_addr) }}:6443 check fall 3 rise 2
-    server lucio {{ home_subnet | ipmath(lucio_addr) }}:6443 check fall 3 rise 2
-    server zarya {{ home_subnet | ipmath(zarya_addr) }}:6443 check fall 3 rise 2
+		option log-health-checks
+		default-server inter 10s fall 2
+    server sombra {{ home_subnet | ipmath(sombra_addr) }}:6443 check
+    server lucio {{ home_subnet | ipmath(lucio_addr) }}:6443 check
+    server zarya {{ home_subnet | ipmath(zarya_addr) }}:6443 check
 
 backend etcd-nodes
     mode tcp
