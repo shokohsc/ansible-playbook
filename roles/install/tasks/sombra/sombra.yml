@@ -1,2 +1,18 @@
-# sombra tasks file for shokohscrole
----
+# https://docs.ansible.com/ansible/2.9/modules/mount_module.html
+# lsblk -f to show disks connected and filesystems used
+- name: Mount External disks
+  mount:
+    path: '{{ item.path }}'
+    src: '{{ item.src }}'
+    fstype: '{{ item.fstype }}'
+    opts: '{{ item.opts }}'
+    state: '{{ item.state }}'
+  with_items:
+      - { path: '/mnt/wd2to', src: '/dev/disk/by-uuid/601B-65B6', fstype: 'exfat', opts: 'rw,uid=1000,gid=1000,dmask=0002,fmask=0003,exec,suid,permissions', state: 'mounted' }
+  become: yes
+  when: ansible_facts['nodename']|lower == 'sombra'
+  tags:
+    - disk
+    - nfs
+    - fstab
+    - nucs
