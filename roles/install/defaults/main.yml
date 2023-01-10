@@ -11,7 +11,7 @@ pi_addr: 90
 
 keepalived:
   sombra:
-    state: MASTER
+    state: BACKUP
     priority: 102
   lucio:
     state: BACKUP

@@ -11,11 +11,14 @@
     packages:
     - haproxy
     - keepalived
+    - iperf3
+    - resolvconf
   become: yes
   tags:
     - packages
     - haproxy
     - keepalived
+    - resolvconf
     - nucs
 
 # https://kubernetes.io/blog/2019/03/15/kubernetes-setup-using-ansible-and-vagrant/
@@ -50,11 +53,50 @@
     - swap
     - nucs
 
+# Set tcp bbr
+# https://djangocas.dev/blog/huge-improve-network-performance-by-change-tcp-congestion-control-to-bbr/
+# https://wiki.crowncloud.net/?How_to_enable_BBR_on_Ubuntu_20_04
+- name: Add the tcp_bbr module
+  modprobe:
+    name: tcp_bbr
+    state: present
+  become: yes
+  tags:
+    - bbr
+    - modprobe
+    - nucs
+
+- name: Set tcp congestion control
+  sysctl:
+    name: net.ipv4.tcp_congestion_control
+    value: bbr
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+  tags:
+    - bbr
+    - sysctl
+    - nucs
+
+- name: Set default qdisc
+  sysctl:
+    name: net.core.default_qdisc
+    value: fq
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+  tags:
+    - bbr
+    - sysctl
+    - nucs
+
 # Set ip forwarding on in /proc and in the sysctl file and reload if necessary
 - name: Set ipv4 forwarding
   sysctl:
     name: net.ipv4.ip_forward
-    value: 1
+    value: "1"
     sysctl_set: yes
     state: present
     reload: yes
@@ -67,7 +109,7 @@
 - name: Set ipv4 forwarding
   sysctl:
     name: net.ipv4.ip_nonlocal_bind
-    value: 1
+    value: "1"
     sysctl_set: yes
     state: present
     reload: yes
@@ -186,6 +228,42 @@
   become: yes
   tags:
     - haproxy
+    - nucs
+
+# https://docs.ansible.com/ansible/2.9/modules/template_module.html
+# https://www.mydailytutorials.com/ansible-template-module-examples/
+# https://www.tecmint.com/set-permanent-dns-nameservers-in-ubuntu-debian/
+- name: Template resolvconf config file
+  template:
+    src: resolvconf/resolv.conf.j2
+    dest: "/etc/resolvconf/resolv.conf.d/head"
+    mode: 0644
+  register: resolvconf_config
+  become: yes
+  tags:
+    - resolvconf
+    - nucs
+
+# https://docs.ansible.com/ansible/2.9/modules/service_module.html
+- name: resolvconf service
+  service:
+    name: resolvconf
+    state: restarted
+    enabled: yes
+  become: yes
+  tags:
+    - resolvconf
+    - nucs
+
+# https://docs.ansible.com/ansible/2.9/modules/service_module.html
+- name: systemd-resolved service
+  service:
+    name: systemd-resolved
+    state: restarted
+    enabled: yes
+  become: yes
+  tags:
+    - resolvconf
     - nucs
 
 # https://docs.ansible.com/ansible/2.9/modules/template_module.html
